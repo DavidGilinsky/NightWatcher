@@ -1,6 +1,6 @@
 # NightWatcher
 
-NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data and remote control.
+NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, and robust health monitoring.
 
 ## Features
 - Communicate with Unihedron SQM-LE devices over TCP/IP
@@ -10,14 +10,16 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - RRDTool-based time-series database for efficient storage and retrieval
 - Example configuration and parser utilities
 - Support for remote control via a configurable TCP control port
+- Threaded reading with timeout and health monitoring
+- Extensible for additional sensors and site data
 
 ## Directory Structure
-- `sqm-le/` — C library for SQM-LE device communication
+- `sqm-le/` �� C library for SQM-LE device communication
 - `parser/` — Generic string parsing utilities
 - `config_file_handler/` — Library for reading/writing/deleting config files
 - `db_handler/` — Library for RRDTool-based database management
 - `conf/` — Example configuration files
-- `main.c` ��� Example main program
+- `main.c` — Main program with threaded reading and health monitoring
 
 ## Configuration
 Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
@@ -34,27 +36,35 @@ sqmPort:10001
 dbName:nightwatcher_db
 readingInterval:300
 controlPort:9000
+sqmHeartbeatInterval:60
+sqmReadTimeout:10
+sqmWriteTimeout:10
 ```
 
 - `readingInterval`: Number of seconds between SQM readings
 - `controlPort`: TCP port on which to listen for remote commands
+- `sqmHeartbeatInterval`: Heartbeat interval in seconds
+- `sqmReadTimeout`: Timeout in seconds for SQM reading thread
+- `sqmWriteTimeout`: Timeout in seconds for SQM write operations
 
 ## Build Instructions
 
 You can build the project using gcc. For example:
 
 ```
-gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c config_file_handler/config_file_handler.c db_handler/db_handler.c -lrrd
+gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c config_file_handler/config_file_handler.c db_handler/db_handler.c -lrrd -lpthread
 ```
 
 ## Dependencies
 - Standard C library
 - rrdtool (with development headers and library)
+- pthreads (for threading)
 
 ## Example Usage
 - Loads configuration from `conf/nwconf.conf`
-- Connects to the SQM-LE device and retrieves readings
+- Connects to the SQM-LE device and retrieves readings in a separate thread
 - Stores readings and site/environmental data in an RRDTool database
+- Monitors health status and enforces timeouts on device communication
 - Ready for extension to support remote control and additional sensors
 
 ## License
