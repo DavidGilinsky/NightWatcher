@@ -101,6 +101,47 @@ int load_site_config(GlobalConfig *site) {
 }
 
 /*
+ * Launches the SQM reading thread if the device is healthy and reading is enabled.
+ * Handles timeout and updates health status.
+ */
+void launch_sqm_read_thread(SQM_LE_Device dev, GlobalConfig site) {
+    if (site.sqmHealthy == true && site.enableSQMread == true) {
+        ThreadArgs args;
+        args.dev = dev;
+        args.site = site;
+        pthread_t tid;
+        pthread_create(&tid, NULL, sqm_reading_thread, &args);
+
+        // Timeout mechanism
+        struct timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        ts.tv_sec += site.sqmReadTimeout;
+
+    #if defined(_GNU_SOURCE)
+        int join_ret = pthread_timedjoin_np(tid, NULL, &ts);
+    #else
+        // Fallback: poll with sleep (not as precise, but portable)
+        int join_ret = 1;
+        for (unsigned int waited = 0; waited < site.sqmReadTimeout; ++waited) {
+            if (pthread_tryjoin_np(tid, NULL) == 0) {
+                join_ret = 0;
+                break;
+            }
+            sleep(1);
+        }
+    #endif
+        if (join_ret != 0) {
+            printf("Thread timed out, cancelling...\n");
+            pthread_cancel(tid);
+            pthread_join(tid, NULL);
+            site.sqmHealthy = false;
+        }
+    } else {
+        printf("SQM is not healthy or reading is not enabled. Reading thread will not be started.\n");
+    }
+}
+
+/*
  * Main entry point for the NightWatcher application.
  * Loads configuration, creates the database if needed, and launches the reading thread with timeout.
  * Returns: 0 on success, nonzero on error.
@@ -138,45 +179,25 @@ int main(void) {
     // Get unit information before starting reading thread
     getUnitInformation(&dev, &site);
 
-    // Only create the reading thread if the SQM is healthy after unit information retrieval
-    // and if site.enableSQMread is true
-    if (site.sqmHealthy == true && site.enableSQMread == true) {
-        ThreadArgs args;
-        args.dev = dev;
-        args.site = site;
-        pthread_t tid;
-        pthread_create(&tid, NULL, sqm_reading_thread, &args);
 
-        // Timeout mechanism
-        struct timespec ts;
-        clock_gettime(CLOCK_REALTIME, &ts);
-        ts.tv_sec += site.sqmReadTimeout;
-
-    #if defined(_GNU_SOURCE)
-        int join_ret = pthread_timedjoin_np(tid, NULL, &ts);
-    #else
-        // Fallback: poll with sleep (not as precise, but portable)
-        int join_ret = 1;
-        for (unsigned int waited = 0; waited < site.sqmReadTimeout; ++waited) {
-            if (pthread_tryjoin_np(tid, NULL) == 0) {
-                join_ret = 0;
-                break;
-            }
-            sleep(1);
+    // Main loop: periodically check unit information and launch reading thread
+    time_t last_heartbeat = 0;
+    time_t last_read = 0;
+    while (1) {
+        time_t now = time(NULL);
+        // Heartbeat: check unit information
+        if (now - last_heartbeat >= site.sqmHeartbeatInterval) {
+            getUnitInformation(&dev, &site);
+            last_heartbeat = now;
+            printf("site.sqmHealthy: %s\n", site.sqmHealthy ? "true" : "false");
         }
-    #endif
-        if (join_ret != 0) {
-            printf("Thread timed out, cancelling...\n");
-            pthread_cancel(tid);
-            pthread_join(tid, NULL);
-            site.sqmHealthy = false;
+        // Reading: launch reading thread if interval elapsed
+        if (now - last_read >= site.readingInterval) {
+            launch_sqm_read_thread(dev, site);
+            last_read = now;
         }
-    } else {
-        // Do not create the reading thread if the SQM is not healthy
-        printf("SQM is not healthy after unit information retrieval. Reading thread will not be started.\n");
+        sleep(1);
     }
 
-    
-    printf("site.sqmHealthy: %s\n", site.sqmHealthy ? "true" : "false");
     return 0;
 }
