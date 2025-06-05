@@ -11,10 +11,11 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - Example configuration and parser utilities
 - Support for remote control via a configurable TCP control port
 - Threaded reading with timeout and health monitoring
+- Health status (site.sqmHealthy) is checked after unit information retrieval; readings are only taken if the device is healthy
 - Extensible for additional sensors and site data
 
 ## Directory Structure
-- `sqm-le/` �� C library for SQM-LE device communication
+- `sqm-le/` — C library for SQM-LE device communication
 - `parser/` — Generic string parsing utilities
 - `config_file_handler/` — Library for reading/writing/deleting config files
 - `db_handler/` — Library for RRDTool-based database management
@@ -47,6 +48,12 @@ sqmWriteTimeout:10
 - `sqmReadTimeout`: Timeout in seconds for SQM reading thread
 - `sqmWriteTimeout`: Timeout in seconds for SQM write operations
 
+## Health Monitoring
+- The program checks the health of the SQM-LE device using unit information retrieval.
+- The reading thread is only started if `site.sqmHealthy` is true after this check.
+- If a reading or parsing operation fails, `site.sqmHealthy` is set to false.
+- Health status is printed at the end of each run.
+
 ## Build Instructions
 
 You can build the project using gcc. For example:
@@ -62,7 +69,7 @@ gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c conf
 
 ## Example Usage
 - Loads configuration from `conf/nwconf.conf`
-- Connects to the SQM-LE device and retrieves readings in a separate thread
+- Connects to the SQM-LE device and retrieves readings in a separate thread (if healthy)
 - Stores readings and site/environmental data in an RRDTool database
 - Monitors health status and enforces timeouts on device communication
 - Ready for extension to support remote control and additional sensors

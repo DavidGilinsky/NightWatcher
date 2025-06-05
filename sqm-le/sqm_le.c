@@ -60,6 +60,7 @@ static int sqm_le_sendrecv(SQM_LE_Device *dev, const void *sendbuf, size_t sendl
  * Returns: 0 on success, negative value on error.
  */
 int getReading(SQM_LE_Device *dev, GlobalConfig *site) {
+    if (site) site->sqmHealthy = false;
     uint8_t cmd[] = {'r', 'x'}; // Send ASCII "rx"
     uint8_t resp[56];
     int ret = sqm_le_sendrecv(dev, cmd, sizeof(cmd), resp, sizeof(resp));
@@ -122,12 +123,32 @@ int getCalibration(SQM_LE_Device *dev) {
  * Gets unit information from the SQM-LE device and updates the dev struct.
  * Returns: 0 on success, negative value on error.
  */
-int getUnitInformation(SQM_LE_Device *dev) {
-    uint8_t cmd[] = {0x04};
-    char resp[64];
+/*
+ * Gets unit information from the SQM-LE device, parses the response, and updates the dev struct and site struct.
+ * Sends 'ix', receives 38 bytes, parses into 5 fields, and populates site->sqmModel and site->sqmSerial.
+ * Returns: 0 on success, negative value on error.
+ */
+int getUnitInformation(SQM_LE_Device *dev, GlobalConfig *site) {
+    if (site) site->sqmHealthy = false;
+    uint8_t cmd[] = {'i', 'x'};
+    char resp[38];
     int ret = sqm_le_sendrecv(dev, cmd, sizeof(cmd), resp, sizeof(resp));
     if (ret == 0) {
-        strncpy(dev->unit_info, resp, sizeof(dev->unit_info));
+        // Null-terminate the response
+        size_t copy_len = sizeof(resp) < sizeof(dev->unit_info) ? sizeof(resp) : sizeof(dev->unit_info) - 1;
+        memcpy(dev->unit_info, resp, copy_len);
+        dev->unit_info[copy_len] = '\0';
+        // Parse fields
+        char field_bufs[5][16];
+        char *fields[5] = { field_bufs[0], field_bufs[1], field_bufs[2], field_bufs[3], field_bufs[4] };
+        int nfields = parse_fields(dev->unit_info, ',', fields, 5, 16);
+        if (nfields == 5 && site) {
+            site->sqmModel = atoi(fields[1]);
+            site->sqmSerial = atoi(fields[3]);
+            site->sqmHealthy = true;
+            printf("sqmModel: %d\n", site->sqmModel);
+            printf("sqmSerial: %d\n", site->sqmSerial);
+        }
     }
     return ret;
 }

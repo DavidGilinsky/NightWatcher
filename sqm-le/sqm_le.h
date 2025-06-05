@@ -30,7 +30,7 @@ typedef struct {
 int getReading(SQM_LE_Device *dev, GlobalConfig *site);
 int getReadingSerialNumber(SQM_LE_Device *dev);
 int getCalibration(SQM_LE_Device *dev);
-int getUnitInformation(SQM_LE_Device *dev);
+int getUnitInformation(SQM_LE_Device *dev, GlobalConfig *site);
 int armLightCalibration(SQM_LE_Device *dev);
 int armDarkCalibration(SQM_LE_Device *dev);
 int setLightCalilbrationOffset(SQM_LE_Device *dev, float offset);

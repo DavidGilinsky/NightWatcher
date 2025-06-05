@@ -103,37 +103,47 @@ int main(void) {
         }
     }
 
-    // Prepare thread arguments
-    ThreadArgs args;
-    args.dev = dev;
-    args.site = site;
-    pthread_t tid;
-    pthread_create(&tid, NULL, sqm_reading_thread, &args);
+    // Get unit information before starting reading thread
+    getUnitInformation(&dev, &site);
 
-    // Timeout mechanism
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    ts.tv_sec += site.sqmReadTimeout;
+    // Only create the reading thread if the SQM is healthy after unit information retrieval
+    if (site.sqmHealthy == true) {
+        ThreadArgs args;
+        args.dev = dev;
+        args.site = site;
+        pthread_t tid;
+        pthread_create(&tid, NULL, sqm_reading_thread, &args);
 
-#if defined(_GNU_SOURCE)
-    int join_ret = pthread_timedjoin_np(tid, NULL, &ts);
-#else
-    // Fallback: poll with sleep (not as precise, but portable)
-    int join_ret = 1;
-    for (unsigned int waited = 0; waited < site.sqmReadTimeout; ++waited) {
-        if (pthread_tryjoin_np(tid, NULL) == 0) {
-            join_ret = 0;
-            break;
+        // Timeout mechanism
+        struct timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        ts.tv_sec += site.sqmReadTimeout;
+
+    #if defined(_GNU_SOURCE)
+        int join_ret = pthread_timedjoin_np(tid, NULL, &ts);
+    #else
+        // Fallback: poll with sleep (not as precise, but portable)
+        int join_ret = 1;
+        for (unsigned int waited = 0; waited < site.sqmReadTimeout; ++waited) {
+            if (pthread_tryjoin_np(tid, NULL) == 0) {
+                join_ret = 0;
+                break;
+            }
+            sleep(1);
         }
-        sleep(1);
+    #endif
+        if (join_ret != 0) {
+            printf("Thread timed out, cancelling...\n");
+            pthread_cancel(tid);
+            pthread_join(tid, NULL);
+            site.sqmHealthy = false;
+        }
+    } else {
+        // Do not create the reading thread if the SQM is not healthy
+        printf("SQM is not healthy after unit information retrieval. Reading thread will not be started.\n");
     }
-#endif
-    if (join_ret != 0) {
-        printf("Thread timed out, cancelling...\n");
-        pthread_cancel(tid);
-        pthread_join(tid, NULL);
-        site.sqmHealthy = false;
-    }
+
+    
     printf("site.sqmHealthy: %s\n", site.sqmHealthy ? "true" : "false");
     return 0;
 }
