@@ -56,6 +56,7 @@ int read_config(GlobalConfig *cfg, const char *filename) {
         else if (strcmp(key, "sqmHeartbeatInterval") == 0) cfg->sqmHeartbeatInterval = (unsigned int)atoi(val);
         else if (strcmp(key, "sqmReadTimeout") == 0) cfg->sqmReadTimeout = (unsigned int)atoi(val);
         else if (strcmp(key, "sqmWriteTimeout") == 0) cfg->sqmWriteTimeout = (unsigned int)atoi(val);
+    else if (strcmp(key, "enableReadOnStartup") == 0) cfg->enableReadOnStartup = (strcmp(val, "true") == 0 || strcmp(val, "1") == 0);
     }
     fclose(f);
     return 0;
@@ -84,6 +85,7 @@ int write_config(const GlobalConfig *cfg, const char *filename) {
     fprintf(f, "sqmHeartbeatInterval:%u\n", cfg->sqmHeartbeatInterval);
     fprintf(f, "sqmReadTimeout:%u\n", cfg->sqmReadTimeout);
     fprintf(f, "sqmWriteTimeout:%u\n", cfg->sqmWriteTimeout);
+    fprintf(f, "enableReadOnStartup:%s\n", cfg->enableReadOnStartup ? "true" : "false");
     fclose(f);
     return 0;
 }

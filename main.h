@@ -21,6 +21,8 @@ typedef struct {
     bool sqmHealthy; // True if SQM is healthy
     unsigned int sqmReadTimeout;  // SQM read timeout in seconds
     unsigned int sqmWriteTimeout; // SQM write timeout in seconds
+    bool enableSQMread;           // Enable periodic SQM reading
+    bool enableReadOnStartup;     // Enable reading on startup (configurable)
 } GlobalConfig;
 
 int main(void);

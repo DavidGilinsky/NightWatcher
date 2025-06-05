@@ -14,9 +14,33 @@
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
+
+/*
+ * Handles SIGHUP (hangup) signal.
+ * Parameter: signum - the signal number.
+ */
+void handle_sighup(int signum) {
+    (void)signum;
+    printf("Received SIGHUP (reload configuration or reinitialize as needed).\n");
+    // Add logic to reload configuration or reinitialize if needed
+}
+
+/*
+ * Handles SIGTERM (termination) signal.
+ * Parameter: signum - the signal number.
+ */
+void handle_sigterm(int signum) {
+    (void)signum;
+    printf("Received SIGTERM (shutting down gracefully).\n");
+    // Add logic to clean up and exit gracefully
+    exit(0);
+}
 
 // Struct to pass to thread
 typedef struct {
+
     SQM_LE_Device dev;
     GlobalConfig site;
 } ThreadArgs;
@@ -82,6 +106,11 @@ int load_site_config(GlobalConfig *site) {
  * Returns: 0 on success, nonzero on error.
  */
 int main(void) {
+
+    // Register signal handlers for SIGHUP and SIGTERM
+    signal(SIGHUP, handle_sighup);
+    signal(SIGTERM, handle_sigterm);
+
     SQM_LE_Device dev;
     GlobalConfig site;
     // Load site configuration from file
