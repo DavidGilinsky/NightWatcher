@@ -5,6 +5,7 @@
  * Date: 5 June 2025
  */
 #include "command_handler.h"
+#include "../parser/parser.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -19,18 +20,6 @@ static void trim_whitespace(char *str) {
     // Trim trailing
     char *end = str + strlen(str) - 1;
     while (end >= str && isspace((unsigned char)*end)) *end-- = '\0';
-}
-
-// Helper: parse the first word of the command, skipping leading whitespace, and normalize to lowercase
-static void get_first_word(const char *cmd, char *word, size_t word_size) {
-    // Skip leading whitespace
-    while (*cmd && isspace((unsigned char)*cmd)) cmd++;
-    size_t i = 0;
-    while (cmd[i] && !isspace((unsigned char)cmd[i]) && i < word_size - 1) {
-        word[i] = tolower((unsigned char)cmd[i]);
-        i++;
-    }
-    word[i] = '\0';
 }
 
 // Command: status
@@ -65,28 +54,35 @@ void command_quit(const char *cmd, char *response, size_t response_size, GlobalC
 
 /*
  * Handles a command string received over TCP and writes a response to the response buffer.
- * Dispatches to the appropriate command function based on the first word.
+ * Uses parse_fields from parser.c to split the command into words, trims each word, and dispatches.
  */
 void handle_command(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
-    (void)site; (void)dev;
-    char word[32];
-    strncpy(word, cmd, sizeof(word)-1); word[sizeof(word)-1] = '\0';
-    trim_whitespace(word);
-    get_first_word(word, word, sizeof(word));
-    printf("[DEBUG] Command word: '%s'\n", word);
-    if (strcmp(word, "status") == 0) {
+    char word_bufs[8][64];
+    char *words[8] = { word_bufs[0], word_bufs[1], word_bufs[2], word_bufs[3], word_bufs[4], word_bufs[5], word_bufs[6], word_bufs[7] };
+    int nwords = parse_fields(cmd, ' ', words, 8, 64);
+    for (int i = 0; i < nwords; ++i) {
+        trim_whitespace(words[i]);
+    }
+    if (nwords == 0 || strlen(words[0]) == 0) {
+        snprintf(response, response_size, "No command received");
+        return;
+    }
+    // Normalize first word to lowercase
+    for (char *p = words[0]; *p; ++p) *p = tolower((unsigned char)*p);
+    printf("[DEBUG] Command word: '%s'\n", words[0]);
+    if (strcmp(words[0], "status") == 0) {
         command_status(cmd, response, response_size, site, dev);
-    } else if (strcmp(word, "show") == 0) {
+    } else if (strcmp(words[0], "show") == 0) {
         command_show(cmd, response, response_size, site, dev);
-    } else if (strcmp(word, "set") == 0) {
+    } else if (strcmp(words[0], "set") == 0) {
         command_set(cmd, response, response_size, site, dev);
-    } else if (strcmp(word, "start") == 0) {
+    } else if (strcmp(words[0], "start") == 0) {
         command_start(cmd, response, response_size, site, dev);
-    } else if (strcmp(word, "stop") == 0) {
+    } else if (strcmp(words[0], "stop") == 0) {
         command_stop(cmd, response, response_size, site, dev);
-    } else if (strcmp(word, "quit") == 0) {
+    } else if (strcmp(words[0], "quit") == 0) {
         command_quit(cmd, response, response_size, site, dev);
     } else {
-        snprintf(response, response_size, "Unknown command: %s", word);
+        snprintf(response, response_size, "Unknown command: %s", words[0]);
     }
 }
