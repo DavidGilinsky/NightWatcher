@@ -14,6 +14,7 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - Health status (`site.sqmHealthy`) is checked after unit information retrieval; readings are only taken if the device is healthy
 - Signal handling for SIGHUP (reload/reinitialize) and SIGTERM (graceful shutdown)
 - Configurable options for enabling/disabling SQM reading and reading on startup
+- Main loop periodically checks device health (site.sqmHeartbeatInterval) and launches reading threads (site.readingInterval)
 - Extensible for additional sensors and site data
 
 ## Directory Structure
@@ -22,7 +23,7 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - `config_file_handler/` — Library for reading/writing/deleting config files
 - `db_handler/` — Library for RRDTool-based database management
 - `conf/` — Example configuration files
-- `main.c` — Main program with threaded reading, health monitoring, and signal handling
+- `main.c` — Main program with threaded reading, health monitoring, signal handling, and main loop
 
 ## Configuration
 Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
@@ -47,15 +48,15 @@ enableReadOnStartup:true
 
 - `readingInterval`: Number of seconds between SQM readings
 - `controlPort`: TCP port on which to listen for remote commands
-- `sqmHeartbeatInterval`: Heartbeat interval in seconds
+- `sqmHeartbeatInterval`: Heartbeat interval in seconds (for health checks)
 - `sqmReadTimeout`: Timeout in seconds for SQM reading thread
 - `sqmWriteTimeout`: Timeout in seconds for SQM write operations
 - `enableReadOnStartup`: If true, perform a reading on startup
 - `enableSQMread`: (code only) Enable periodic SQM reading (not in config file)
 
-## Health Monitoring
-- The program checks the health of the SQM-LE device using unit information retrieval.
-- The reading thread is only started if `site.sqmHealthy` is true after this check.
+## Health Monitoring and Main Loop
+- The program checks the health of the SQM-LE device using unit information retrieval at intervals of `site.sqmHeartbeatInterval`.
+- The reading thread is launched at intervals of `site.readingInterval` if `site.sqmHealthy` and `site.enableSQMread` are true.
 - If a reading or parsing operation fails, `site.sqmHealthy` is set to false.
 - Health status is printed at the end of each run.
 
@@ -82,6 +83,7 @@ gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c conf
 - Stores readings and site/environmental data in an RRDTool database
 - Monitors health status and enforces timeouts on device communication
 - Handles SIGHUP and SIGTERM for reloading and graceful shutdown
+- Main loop ensures continuous health monitoring and periodic readings
 - Ready for extension to support remote control and additional sensors
 
 ## License
