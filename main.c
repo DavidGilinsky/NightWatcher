@@ -124,6 +124,9 @@ int main(void) {
     dev.socket_fd = -1;
     dev.last_reading[0] = '\0';
 
+    // Check if site.enableReadOnStartup is true, then set site.enableSQMread to true
+    site.enableSQMread = site.enableReadOnStartup;  
+
     // Create the database if it does not exist
     if (access(site.dbName, F_OK) != 0) {
         if (db_create(site.dbName) != 0) {
@@ -136,7 +139,8 @@ int main(void) {
     getUnitInformation(&dev, &site);
 
     // Only create the reading thread if the SQM is healthy after unit information retrieval
-    if (site.sqmHealthy == true) {
+    // and if site.enableSQMread is true
+    if (site.sqmHealthy == true && site.enableSQMread == true) {
         ThreadArgs args;
         args.dev = dev;
         args.site = site;

@@ -1,6 +1,6 @@
 # NightWatcher
 
-NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, and robust health monitoring.
+NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, robust health monitoring, and signal handling.
 
 ## Features
 - Communicate with Unihedron SQM-LE devices over TCP/IP
@@ -11,7 +11,9 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - Example configuration and parser utilities
 - Support for remote control via a configurable TCP control port
 - Threaded reading with timeout and health monitoring
-- Health status (site.sqmHealthy) is checked after unit information retrieval; readings are only taken if the device is healthy
+- Health status (`site.sqmHealthy`) is checked after unit information retrieval; readings are only taken if the device is healthy
+- Signal handling for SIGHUP (reload/reinitialize) and SIGTERM (graceful shutdown)
+- Configurable options for enabling/disabling SQM reading and reading on startup
 - Extensible for additional sensors and site data
 
 ## Directory Structure
@@ -20,7 +22,7 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - `config_file_handler/` — Library for reading/writing/deleting config files
 - `db_handler/` — Library for RRDTool-based database management
 - `conf/` — Example configuration files
-- `main.c` — Main program with threaded reading and health monitoring
+- `main.c` — Main program with threaded reading, health monitoring, and signal handling
 
 ## Configuration
 Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
@@ -40,6 +42,7 @@ controlPort:9000
 sqmHeartbeatInterval:60
 sqmReadTimeout:10
 sqmWriteTimeout:10
+enableReadOnStartup:true
 ```
 
 - `readingInterval`: Number of seconds between SQM readings
@@ -47,12 +50,18 @@ sqmWriteTimeout:10
 - `sqmHeartbeatInterval`: Heartbeat interval in seconds
 - `sqmReadTimeout`: Timeout in seconds for SQM reading thread
 - `sqmWriteTimeout`: Timeout in seconds for SQM write operations
+- `enableReadOnStartup`: If true, perform a reading on startup
+- `enableSQMread`: (code only) Enable periodic SQM reading (not in config file)
 
 ## Health Monitoring
 - The program checks the health of the SQM-LE device using unit information retrieval.
 - The reading thread is only started if `site.sqmHealthy` is true after this check.
 - If a reading or parsing operation fails, `site.sqmHealthy` is set to false.
 - Health status is printed at the end of each run.
+
+## Signal Handling
+- SIGHUP: Triggers a reload or reinitialization (logic can be extended as needed)
+- SIGTERM: Triggers a graceful shutdown
 
 ## Build Instructions
 
@@ -72,6 +81,7 @@ gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c conf
 - Connects to the SQM-LE device and retrieves readings in a separate thread (if healthy)
 - Stores readings and site/environmental data in an RRDTool database
 - Monitors health status and enforces timeouts on device communication
+- Handles SIGHUP and SIGTERM for reloading and graceful shutdown
 - Ready for extension to support remote control and additional sensors
 
 ## License
