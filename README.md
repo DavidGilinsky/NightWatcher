@@ -26,6 +26,9 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - `command_handler/` — Library for TCP command parsing and dispatch
 - `conf/` — Example configuration files
 - `main.c` — Main program with threaded reading, health monitoring, signal handling, and main loop
+- `main.h` — Header for main program
+- `nightwatcher` — Compiled binary (created after build)
+- `nightwatcher_db` — Default RRDTool database file (created at runtime)
 
 ## Configuration
 Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
