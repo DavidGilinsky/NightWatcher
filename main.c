@@ -46,10 +46,56 @@ void handle_sigterm(int signum) {
 
 // Struct to pass to thread
 typedef struct {
-
     SQM_LE_Device *dev;
     GlobalConfig *site;
 } ThreadArgs;
+
+// TCP listener thread function
+void* tcp_listener_thread(void* arg) {
+    ThreadArgs* args = (ThreadArgs*)arg;
+    SQM_LE_Device* dev = args->dev;
+    GlobalConfig* site = args->site;
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_fd < 0) {
+        perror("socket");
+        free(args);
+        pthread_exit(NULL);
+    }
+    int opt = 1;
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    struct sockaddr_in addr = {0};
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = htons(site->controlPort);
+    if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        perror("bind");
+        close(server_fd);
+        free(args);
+        pthread_exit(NULL);
+    }
+    listen(server_fd, 5);
+    fcntl(server_fd, F_SETFL, O_NONBLOCK);
+    while (1) {
+        struct sockaddr_in client_addr;
+        socklen_t client_len = sizeof(client_addr);
+        int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
+        if (client_fd >= 0) {
+            char buf[256] = {0};
+            ssize_t n = read(client_fd, buf, sizeof(buf) - 1);
+            if (n > 0) {
+                buf[n] = '\0';
+                char response[256] = {0};
+                handle_command(buf, response, sizeof(response), site, dev);
+                write(client_fd, response, strlen(response));
+            }
+            close(client_fd);
+        }
+        usleep(10000); // Sleep 10ms to avoid busy loop
+    }
+    close(server_fd);
+    free(args);
+    pthread_exit(NULL);
+}
 
 /*
  * Thread function to perform a reading from the SQM-LE device and add the result to the database.
@@ -191,25 +237,12 @@ int main(void) {
     // Get unit information before starting reading thread
     getUnitInformation(&dev, &site);
 
-    // Setup TCP listener for controlPort (non-blocking)
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_fd < 0) {
-        perror("socket");
-        return 1;
-    }
-    int opt = 1;
-    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-    struct sockaddr_in addr = {0};
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(site.controlPort);
-    if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-        perror("bind");
-        close(server_fd);
-        return 1;
-    }
-    listen(server_fd, 5);
-    fcntl(server_fd, F_SETFL, O_NONBLOCK);
+    // Launch TCP listener in a separate thread
+    pthread_t tcp_thread;
+    ThreadArgs *tcp_args = malloc(sizeof(ThreadArgs));
+    tcp_args->dev = &dev;
+    tcp_args->site = &site;
+    pthread_create(&tcp_thread, NULL, tcp_listener_thread, tcp_args);
 
 
     // Main loop: periodically check unit information and launch reading thread
@@ -230,21 +263,7 @@ int main(void) {
             last_read = now;
             }
         }
-        // TCP listener for commands
-        struct sockaddr_in client_addr;
-        socklen_t client_len = sizeof(client_addr);
-        int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
-        if (client_fd >= 0) {
-        char buf[256] = {0};
-        ssize_t n = read(client_fd, buf, sizeof(buf) - 1);
-        if (n > 0) {
-            buf[n] = '\0';
-            char response[256] = {0};
-            handle_command(buf, response, sizeof(response), &site, &dev);
-            write(client_fd, response, strlen(response));
-        }
-        close(client_fd);
-        }
+        sleep(1);
     }
 
     return 0;

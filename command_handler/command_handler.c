@@ -35,13 +35,16 @@ void command_show(char *words[], int nwords, char *response, size_t response_siz
     if(site && dev) {
         if (strcmp(words[1], "reading") == 0) {
           if (dev->reading_ready) {
-            snprintf(response, response_size, "Reading: %s", dev->last_reading); 
+            snprintf(response, response_size, "Reading: %s\n", dev->last_reading); 
           } else {
-            snprintf(response, response_size, "Reading: Not ready");
+            snprintf(response, response_size, "Reading: Not ready\n");
           }
         }
         if (strcmp(words[1], "serial") == 0) {
-          snprintf(response, response_size, "Serial: %d", dev->sqmSerial); 
+          snprintf(response, response_size, "Serial: %d\n", dev->sqmSerial); 
+        }
+        if (strcmp(words[1], "model") == 0) {
+          snprintf(response, response_size, "Model: %d\n", dev->sqmModel); 
         }
     }
 }
@@ -55,13 +58,19 @@ void command_set(char *words[], int nwords, char *response, size_t response_size
 // Command: start
 void command_start(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
     (void)words; (void)nwords; (void)site; (void)dev;
-    snprintf(response, response_size, "Start: Not implemented");
+    if (site->enableSQMread == false) {
+        site->enableSQMread = true;
+    }
+    snprintf(response, response_size, "Start: SQM read enabled\n");
 }
 
 // Command: stop
 void command_stop(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
     (void)words; (void)nwords; (void)site; (void)dev;
-    snprintf(response, response_size, "Stop: Not implemented");
+    if (site->enableSQMread == true) {
+        site->enableSQMread = false;
+    }
+    snprintf(response, response_size, "Stop: SQM read disabled\n");
 }
 
 // Command: db
