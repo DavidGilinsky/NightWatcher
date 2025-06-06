@@ -13,8 +13,11 @@ typedef struct {
     uint16_t port;             // Device port
     int socket_fd;             // Socket file descriptor
     // Device-specific variables (add as needed)
-    char serial_number[32];
+    // char serial_number[32];
+    int sqmModel;
+    int sqmSerial;
     char last_reading[64];
+    bool reading_ready;
     float calibration;
     char unit_info[64];
     // Add more fields as needed for calibration, settings, etc.

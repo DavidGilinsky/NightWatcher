@@ -1,0 +1,3 @@
+/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/rebuild_cache.dir
+/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/edit_cache.dir
+/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir

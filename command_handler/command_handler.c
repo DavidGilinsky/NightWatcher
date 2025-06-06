@@ -23,32 +23,56 @@ static void trim_whitespace(char *str) {
 }
 
 // Command: status
-void command_status(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+void command_status(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)dev;
     snprintf(response, response_size, "Status: SQM healthy = %s", site->sqmHealthy ? "true" : "false");
 }
 
 // Command: show
-void command_show(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
-    snprintf(response, response_size, "Show: Not implemented");
+void command_show(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)site; (void)dev;
+//  snprintf(response, response_size, "Show: Not implemented");
+    if(site && dev) {
+        if (strcmp(words[1], "reading") == 0) {
+          if (dev->reading_ready) {
+            snprintf(response, response_size, "Reading: %s", dev->last_reading); 
+          } else {
+            snprintf(response, response_size, "Reading: Not ready");
+          }
+        }
+        if (strcmp(words[1], "serial") == 0) {
+          snprintf(response, response_size, "Serial: %d", dev->sqmSerial); 
+        }
+    }
 }
 
 // Command: set
-void command_set(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+void command_set(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)site; (void)dev;
     snprintf(response, response_size, "Set: Not implemented");
 }
 
 // Command: start
-void command_start(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+void command_start(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)site; (void)dev;
     snprintf(response, response_size, "Start: Not implemented");
 }
 
 // Command: stop
-void command_stop(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+void command_stop(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)site; (void)dev;
     snprintf(response, response_size, "Stop: Not implemented");
 }
 
+// Command: db
+void command_db(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)site; (void)dev;
+    snprintf(response, response_size, "DB: Not implemented");
+}
+
 // Command: quit
-void command_quit(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+void command_quit(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+    (void)words; (void)nwords; (void)site; (void)dev;
     snprintf(response, response_size, "Quit: Not implemented");
 }
 
@@ -71,17 +95,19 @@ void handle_command(const char *cmd, char *response, size_t response_size, Globa
     for (char *p = words[0]; *p; ++p) *p = tolower((unsigned char)*p);
     printf("[DEBUG] Command word: '%s'\n", words[0]);
     if (strcmp(words[0], "status") == 0) {
-        command_status(cmd, response, response_size, site, dev);
+        command_status(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "show") == 0) {
-        command_show(cmd, response, response_size, site, dev);
+        command_show(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "set") == 0) {
-        command_set(cmd, response, response_size, site, dev);
+        command_set(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "start") == 0) {
-        command_start(cmd, response, response_size, site, dev);
+        command_start(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "stop") == 0) {
-        command_stop(cmd, response, response_size, site, dev);
+        command_stop(words, nwords, response, response_size, site, dev);
+    } else if (strcmp(words[0], "db") == 0) {
+        command_db(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "quit") == 0) {
-        command_quit(cmd, response, response_size, site, dev);
+        command_quit(words, nwords, response, response_size, site, dev);
     } else {
         snprintf(response, response_size, "Unknown command: %s", words[0]);
     }

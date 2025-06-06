@@ -47,8 +47,8 @@ void handle_sigterm(int signum) {
 // Struct to pass to thread
 typedef struct {
 
-    SQM_LE_Device dev;
-    GlobalConfig site;
+    SQM_LE_Device *dev;
+    GlobalConfig *site;
 } ThreadArgs;
 
 /*
@@ -58,10 +58,11 @@ typedef struct {
  */
 void* sqm_reading_thread(void* arg) {
     ThreadArgs* args = (ThreadArgs*)arg;
-    SQM_LE_Device* dev = &args->dev;
-    GlobalConfig* site = &args->site;
+    SQM_LE_Device* dev = args->dev;
+    GlobalConfig* site = args->site;
 
     int ret = getReading(dev, site);
+    free(args);
     if (ret == 0) {
         printf("Site name: %s\n", site->siteName);
         printf("SQM-LE Reading: %s\n", dev->last_reading);
@@ -110,18 +111,18 @@ int load_site_config(GlobalConfig *site) {
  * Launches the SQM reading thread if the device is healthy and reading is enabled.
  * Handles timeout and updates health status.
  */
-void launch_sqm_read_thread(SQM_LE_Device dev, GlobalConfig site) {
-    if (site.sqmHealthy == true && site.enableSQMread == true) {
-        ThreadArgs args;
-        args.dev = dev;
-        args.site = site;
+void launch_sqm_read_thread(SQM_LE_Device *dev, GlobalConfig *site) {
+    if (site->sqmHealthy == true && site->enableSQMread == true) {
+        ThreadArgs *args = malloc(sizeof(ThreadArgs));
+        args->dev = dev;
+        args->site = site;
         pthread_t tid;
-        pthread_create(&tid, NULL, sqm_reading_thread, &args);
+        pthread_create(&tid, NULL, sqm_reading_thread, args);
 
         // Timeout mechanism
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
-        ts.tv_sec += site.sqmReadTimeout;
+        ts.tv_sec += site->sqmReadTimeout;
 
     #if defined(_GNU_SOURCE)
         int join_ret = pthread_timedjoin_np(tid, NULL, &ts);
@@ -140,7 +141,7 @@ void launch_sqm_read_thread(SQM_LE_Device dev, GlobalConfig site) {
             printf("Thread timed out, cancelling...\n");
             pthread_cancel(tid);
             pthread_join(tid, NULL);
-            site.sqmHealthy = false;
+            site->sqmHealthy = false;
         }
     } else {
         printf("SQM is not healthy or reading is not enabled. Reading thread will not be started.\n");
@@ -160,6 +161,11 @@ int main(void) {
 
     SQM_LE_Device dev;
     GlobalConfig site;
+
+    // Initialize health variables to false until we get positive indication
+    site.sqmHealthy = false;
+    dev.reading_ready = false;
+    
     // Load site configuration from file
     if (load_site_config(&site) != 0) {
         printf("Failed to load site configuration from %s\n", default_config_file);
@@ -219,8 +225,10 @@ int main(void) {
         }
         // Reading: launch reading thread if interval elapsed
         if (now - last_read >= site.readingInterval) {
-            launch_sqm_read_thread(dev, site);
+            if (site.sqmHealthy == true && site.enableSQMread == true) {
+            launch_sqm_read_thread(&dev, &site);
             last_read = now;
+            }
         }
         // TCP listener for commands
         struct sockaddr_in client_addr;

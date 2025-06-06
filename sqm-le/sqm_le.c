@@ -61,6 +61,7 @@ static int sqm_le_sendrecv(SQM_LE_Device *dev, const void *sendbuf, size_t sendl
  */
 int getReading(SQM_LE_Device *dev, GlobalConfig *site) {
     if (site) site->sqmHealthy = false;
+    if (dev) dev->reading_ready = false;
     uint8_t cmd[] = {'r', 'x'}; // Send ASCII "rx"
     uint8_t resp[56];
     int ret = sqm_le_sendrecv(dev, cmd, sizeof(cmd), resp, sizeof(resp));
@@ -86,6 +87,7 @@ int getReading(SQM_LE_Device *dev, GlobalConfig *site) {
             dev->sensorPeriodSecs = strtof(fields[4], NULL);
             dev->sensorTemp = strtof(fields[5], NULL);
             if (site) site->sqmHealthy = true;
+            if (dev) dev->reading_ready = true;
         }
     }
     return ret;
@@ -100,7 +102,7 @@ int getReadingSerialNumber(SQM_LE_Device *dev) {
     char resp[32];
     int ret = sqm_le_sendrecv(dev, cmd, sizeof(cmd), resp, sizeof(resp));
     if (ret == 0) {
-        strncpy(dev->serial_number, resp, sizeof(dev->serial_number));
+    //    strncpy(dev->serial_number, resp, sizeof(dev->serial_number));
     }
     return ret;
 }
@@ -144,10 +146,13 @@ int getUnitInformation(SQM_LE_Device *dev, GlobalConfig *site) {
         int nfields = parse_fields(dev->unit_info, ',', fields, 5, 16);
         if (nfields == 5 && site) {
             site->sqmModel = atoi(fields[1]);
+            dev->sqmModel = site->sqmModel;
             site->sqmSerial = atoi(fields[3]);
+            dev->sqmSerial = site->sqmSerial;
             site->sqmHealthy = true;
             printf("sqmModel: %d\n", site->sqmModel);
             printf("sqmSerial: %d\n", site->sqmSerial);
+            printf("Reading Ready: %s\n", dev->reading_ready ? "true" : "false");
         }
     }
     return ret;
