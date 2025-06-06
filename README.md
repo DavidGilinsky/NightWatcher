@@ -14,7 +14,7 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - Health status (`site.sqmHealthy`) is checked after unit information retrieval; readings are only taken if the device is healthy
 - Signal handling for SIGHUP (reload/reinitialize) and SIGTERM (graceful shutdown)
 - Configurable options for enabling/disabling SQM reading and reading on startup
-- Main loop periodically checks device health (site.sqmHeartbeatInterval), launches reading threads (site.readingInterval), and listens for TCP commands
+- Main loop periodically checks device health (site.sqmHeartbeatInterval) and launches reading threads (site.readingInterval); TCP command listener runs in a separate thread and does not block the main loop
 - TCP command parser robustly handles whitespace and case, and dispatches to command functions (status, show, set, start, stop, quit)
 - Extensible for additional sensors and site data
 
@@ -25,7 +25,8 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - `db_handler/` — Library for RRDTool-based database management
 - `command_handler/` — Library for TCP command parsing and dispatch
 - `conf/` — Example configuration files
-- `main.c` — Main program with threaded reading, health monitoring, signal handling, and main loop
+- `main.c` — Main program with threaded reading, health monitoring, signal handling, main loop, and TCP listener thread
+- `CMakeLists.txt` — CMake build configuration file
 - `main.h` — Header for main program
 - `nightwatcher` — Compiled binary (created after build)
 - `nightwatcher_db` — Default RRDTool database file (created at runtime)
@@ -64,7 +65,8 @@ enableReadOnStartup:true
 - The reading thread is launched at intervals of `site.readingInterval` if `site.sqmHealthy` and `site.enableSQMread` are true.
 - If a reading or parsing operation fails, `site.sqmHealthy` is set to false.
 - Health status is printed at the end of each run.
-- The main loop also listens for TCP commands and dispatches them to the command handler.
+- The main loop is non-blocking and does not handle TCP commands directly; the TCP command listener runs in a separate thread.
+- The main loop includes a recommended `usleep(10000);` (10 ms) at the end of each iteration to prevent busy-waiting and reduce CPU usage.
 
 ## Command Handler
 - Listens for TCP connections on `site.controlPort`
@@ -78,7 +80,16 @@ enableReadOnStartup:true
 
 ## Build Instructions
 
-You can build the project using gcc. For example:
+The recommended way to build the project is with CMake:
+
+```
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+make
+```
+
+Alternatively, you can build the project using gcc. For example:
 
 ```
 gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c config_file_handler/config_file_handler.c db_handler/db_handler.c command_handler/command_handler.c -lrrd -lpthread
