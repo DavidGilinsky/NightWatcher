@@ -3,35 +3,63 @@
 
 CMakeFiles/nightwatcher.dir/command_handler/command_handler.c.o
  /home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.c
- /home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.h
- /home/gilinsky/devel/sqm/NightWatcher/main.h
- /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
- /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
 CMakeFiles/nightwatcher.dir/config_file_handler/config_file_handler.c.o
+ ../command_handler/command_handler.h
+ ../config_file_handler/config_file_handler.h
+ ../db_handler/db_handler.h
+ ../main.h
+ ../nightwatcher.h
+ ../parser/parser.h
+ ../sqm-le/sqm_le.h
+ ../weather/AmbientWeather/AmbientWeather.h
  /home/gilinsky/devel/sqm/NightWatcher/config_file_handler/config_file_handler.c
- /home/gilinsky/devel/sqm/NightWatcher/config_file_handler/config_file_handler.h
- /home/gilinsky/devel/sqm/NightWatcher/main.h
 CMakeFiles/nightwatcher.dir/db_handler/db_handler.c.o
+ ../command_handler/command_handler.h
+ ../config_file_handler/config_file_handler.h
+ ../db_handler/db_handler.h
+ ../main.h
+ ../nightwatcher.h
+ ../parser/parser.h
+ ../sqm-le/sqm_le.h
+ ../weather/AmbientWeather/AmbientWeather.h
  /home/gilinsky/devel/sqm/NightWatcher/db_handler/db_handler.c
- /home/gilinsky/devel/sqm/NightWatcher/db_handler/db_handler.h
- /home/gilinsky/devel/sqm/NightWatcher/main.h
 CMakeFiles/nightwatcher.dir/main.c.o
  /home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.h
  /home/gilinsky/devel/sqm/NightWatcher/config_file_handler/config_file_handler.h
  /home/gilinsky/devel/sqm/NightWatcher/db_handler/db_handler.h
  /home/gilinsky/devel/sqm/NightWatcher/main.c
  /home/gilinsky/devel/sqm/NightWatcher/main.h
+ /home/gilinsky/devel/sqm/NightWatcher/nightwatcher.h
+ /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
  /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
  /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h
 CMakeFiles/nightwatcher.dir/parser/parser.c.o
+ ../command_handler/command_handler.h
+ ../config_file_handler/config_file_handler.h
+ ../db_handler/db_handler.h
+ ../main.h
+ ../nightwatcher.h
+ ../parser/parser.h
+ ../sqm-le/sqm_le.h
+ ../weather/AmbientWeather/AmbientWeather.h
  /home/gilinsky/devel/sqm/NightWatcher/parser/parser.c
- /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o
- /home/gilinsky/devel/sqm/NightWatcher/main.h
- /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
+ ../command_handler/command_handler.h
+ ../config_file_handler/config_file_handler.h
+ ../db_handler/db_handler.h
+ ../main.h
+ ../nightwatcher.h
+ ../parser/parser.h
+ ../sqm-le/sqm_le.h
+ ../weather/AmbientWeather/AmbientWeather.h
  /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.c
- /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
 CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o
- /home/gilinsky/devel/sqm/NightWatcher/main.h
+ ../command_handler/command_handler.h
+ ../config_file_handler/config_file_handler.h
+ ../db_handler/db_handler.h
+ ../main.h
+ ../nightwatcher.h
+ ../parser/parser.h
+ ../sqm-le/sqm_le.h
+ ../weather/AmbientWeather/AmbientWeather.h
  /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.c
- /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h

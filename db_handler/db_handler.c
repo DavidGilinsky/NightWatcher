@@ -1,5 +1,6 @@
-#include "db_handler.h"
+// #include "db_handler.h"
 #define _XOPEN_SOURCE
+#include "nightwatcher.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

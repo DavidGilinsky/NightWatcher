@@ -5,12 +5,9 @@
  * Date: 5 June 2025
  */
 #define _GNU_SOURCE
-#include "main.h"
-#include "sqm-le/sqm_le.h"
+#include "nightwatcher.h"
 #include <stdio.h>
 #include <string.h>
-#include "config_file_handler/config_file_handler.h"
-#include "db_handler/db_handler.h"
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -21,8 +18,6 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "command_handler/command_handler.h"
-#include "weather/AmbientWeather/AmbientWeather.h"
 
 
 char default_config_file[] = "./conf/nwconf.conf";

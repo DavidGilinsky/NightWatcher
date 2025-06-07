@@ -1,7 +1,7 @@
 #ifndef DB_HANDLER_H
 #define DB_HANDLER_H
 
-#include "../main.h"
+#include "nightwatcher.h"
 #include <stdint.h>
 #include <time.h>
 #include <rrd.h>

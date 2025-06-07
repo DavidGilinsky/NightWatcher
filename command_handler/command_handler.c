@@ -4,8 +4,7 @@
  * Author: David Gilinsky - gilinsky@gilinskyresearch.com
  * Date: 5 June 2025
  */
-#include "command_handler.h"
-#include "../parser/parser.h"
+#include "nightwatcher.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

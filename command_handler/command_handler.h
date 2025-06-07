@@ -7,8 +7,8 @@
 #ifndef COMMAND_HANDLER_H
 #define COMMAND_HANDLER_H
 
-#include "../main.h"
-#include "../sqm-le/sqm_le.h"
+// #include "../main.h"
+// #include "../sqm-le/sqm_le.h"
 #include <stddef.h>
 
 // Handles a command string received over TCP and writes a response to the response buffer.

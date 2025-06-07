@@ -14,6 +14,7 @@ set(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -Wextra" CACHE STRING "Debug C flags" FORC
 
 # Include subdirectories
 include_directories(
+    ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/sqm-le
     ${PROJECT_SOURCE_DIR}/parser
     ${PROJECT_SOURCE_DIR}/config_file_handler

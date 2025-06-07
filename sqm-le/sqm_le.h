@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "../main.h"
 
 #define SQM_LE_IP_MAXLEN 64
 

@@ -4,13 +4,12 @@
  * Author: David Gilinsky - gilinsky@gilinskyresearch.com
  * Date: 5 June 2025
  */
-#include "AmbientWeather.h"
+#include "nightwatcher.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
 #include <cjson/cJSON.h>
-#include "../../main.h"
 
 static char g_api_key[128] = {0};
 static char g_app_key[128] = {0};

@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "nightwatcher.h"
 #include <string.h>
 
 int parse_fields(const char *input, char sep, char **fields, size_t max_fields, size_t field_buf_size) {

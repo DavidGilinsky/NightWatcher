@@ -4,7 +4,7 @@
  * Author: David Gilinsky - gilinsky@gilinskyresearch.com
  * Date: 5 June 2025
  */
-#include "config_file_handler.h"
+#include "nightwatcher.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

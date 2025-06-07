@@ -4,14 +4,13 @@
  * Author: David Gilinsky - gilinsky@gilinskyresearch.com
  * Date: 5 June 2025
  */
-#include "sqm_le.h"
+#include "nightwatcher.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <stdbool.h>
-#include "../parser/parser.h"
 
 /*
  * Establishes a TCP connection to the SQM-LE device using the IP and port in the dev struct.
