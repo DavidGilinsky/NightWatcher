@@ -23,6 +23,13 @@ typedef struct {
     unsigned int sqmWriteTimeout; // SQM write timeout in seconds
     bool enableSQMread;           // Enable periodic SQM reading
     bool enableReadOnStartup;     // Enable reading on startup (configurable)
+    char AmbientWeatherAPIKey[66]; // Ambient Weather API key
+    char AmbientWeatherAppKey[66]; // Ambient Weather app key
+    unsigned int AmbientWeatherUpdateInterval; // Ambient Weather update interval in seconds
+    char AmbientWeatherDeviceMAC[17]; // Ambient Weather device MAC
+    char AmbientWeatherEncodedMAC[28]; // Ambient Weather encoded MAC for URL construction
+    bool enableWeather; // Enable Weather information retrieval
+    bool weatherReady; // True if weather data is ready
 } GlobalConfig;
 
 int main(void);

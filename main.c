@@ -22,6 +22,10 @@
 #include <fcntl.h>
 #include <errno.h>
 #include "command_handler/command_handler.h"
+#include "weather/AmbientWeather/AmbientWeather.h"
+
+
+char default_config_file[] = "./conf/nwconf.conf";
 
 /*
  * Handles SIGHUP (hangup) signal.
@@ -44,10 +48,18 @@ void handle_sigterm(int signum) {
     exit(0);
 }
 
+void handle_sigint(int signum) {
+    (void)signum;
+    printf("Received SIGINT (shutting down gracefully).\n");
+    // Add logic to clean up and exit gracefully
+    exit(0);
+}
+
 // Struct to pass to thread
 typedef struct {
     SQM_LE_Device *dev;
     GlobalConfig *site;
+    AW_WeatherData *weatherData;
 } ThreadArgs;
 
 // TCP listener thread function
@@ -106,9 +118,11 @@ void* sqm_reading_thread(void* arg) {
     ThreadArgs* args = (ThreadArgs*)arg;
     SQM_LE_Device* dev = args->dev;
     GlobalConfig* site = args->site;
+    AW_WeatherData* weatherData = args->weatherData;
+
+    dev->reading_ready = false;
 
     int ret = getReading(dev, site);
-    free(args);
     if (ret == 0) {
         printf("Site name: %s\n", site->siteName);
         printf("SQM-LE Reading: %s\n", dev->last_reading);
@@ -130,19 +144,26 @@ void* sqm_reading_thread(void* arg) {
         entry.sqmSerial = site->sqmSerial;
         entry.mpsqa = dev->mpsqa;
         entry.sensorTemp = dev->sensorTemp;
-        entry.siteTemp = 0.0f;      // Placeholder, set as needed
-        entry.sitePressure = 0.0f;  // Placeholder, set as needed
-        entry.siteHumidity = 0.0f;  // Placeholder, set as needed
+        if (weatherData->weatherReady) {
+            entry.siteTemp = weatherData->temperature_f;        
+            entry.sitePressure = weatherData->pressure_in;
+            entry.siteHumidity = weatherData->humidity;  
+        } else {
+            entry.siteTemp = 999.9;         // Check for these values to indicate missing data
+            entry.sitePressure = 999.9;
+            entry.siteHumidity = 999.9;
+        }
         if (db_add_entry(site->dbName, &entry) != 0) {
             printf("Failed to add entry to database\n");
         }
+        dev->reading_ready = true;
     } else {
         printf("Failed to get reading, error code: %d\n", ret);
     }
+    free(args);
     return NULL;
 }
 
-char default_config_file[] = "./conf/nwconf.conf";
 
 /*
  * Loads the site configuration from the default config file into the provided GlobalConfig struct.
@@ -157,11 +178,12 @@ int load_site_config(GlobalConfig *site) {
  * Launches the SQM reading thread if the device is healthy and reading is enabled.
  * Handles timeout and updates health status.
  */
-void launch_sqm_read_thread(SQM_LE_Device *dev, GlobalConfig *site) {
+void launch_sqm_read_thread(SQM_LE_Device *dev, GlobalConfig *site, AW_WeatherData *weatherData) {
     if (site->sqmHealthy == true && site->enableSQMread == true) {
         ThreadArgs *args = malloc(sizeof(ThreadArgs));
         args->dev = dev;
         args->site = site;
+        args->weatherData = weatherData;
         pthread_t tid;
         pthread_create(&tid, NULL, sqm_reading_thread, args);
 
@@ -194,6 +216,65 @@ void launch_sqm_read_thread(SQM_LE_Device *dev, GlobalConfig *site) {
     }
 }
 
+void* weather_reading_thread(void* arg) {
+    ThreadArgs* args = (ThreadArgs*)arg;
+    GlobalConfig* site = args->site;
+    AW_WeatherData* weatherData = args->weatherData;
+
+    weatherData->weatherReady = false;
+
+    if (site->enableWeather == true) {
+        if (aw_init(site->AmbientWeatherAPIKey, site->AmbientWeatherAppKey, site->AmbientWeatherEncodedMAC)) {
+            if (aw_get_current_weather(weatherData)) {
+                printf("Weather data retrieved successfully.\n");
+                printf("Temperature: %f\n", weatherData->temperature_f);
+                weatherData->weatherReady = true;
+            } else {
+                printf("Failed to retrieve weather data.\n");
+            }
+            aw_cleanup();
+        } else {
+            printf("Failed to initialize AmbientWeather API client.\n");
+        }
+    }
+    free(args);
+    return NULL;
+}
+
+void launch_weather_thread(GlobalConfig *site, AW_WeatherData *weatherData) {
+    ThreadArgs *weatherArgs = malloc(sizeof(ThreadArgs));
+    weatherArgs->site = site;
+    weatherArgs->weatherData = weatherData;
+    pthread_t tid;
+    pthread_create(&tid, NULL, weather_reading_thread, weatherArgs);
+
+ /* // Timeout mechanism
+        struct timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        ts.tv_sec += site->sqmReadTimeout;
+
+    #if defined(_GNU_SOURCE)
+        int join_ret = pthread_timedjoin_np(tid, NULL, &ts);
+    #else
+        // Fallback: poll with sleep (not as precise, but portable)
+        int join_ret = 1;
+        for (unsigned int waited = 0; waited < site.sqmReadTimeout; ++waited) {
+            if (pthread_tryjoin_np(tid, NULL) == 0) {
+                join_ret = 0;
+                break;
+            }
+            sleep(1);
+        }
+    #endif
+        if (join_ret != 0) {
+            printf("Thread timed out, cancelling...\n");
+            pthread_cancel(tid);
+            pthread_join(tid, NULL);
+            site->sqmHealthy = false;
+        }  */ 
+} 
+
+
 /*
  * Main entry point for the NightWatcher application.
  * Loads configuration, creates the database if needed, and launches the reading thread with timeout.
@@ -204,14 +285,19 @@ int main(void) {
     // Register signal handlers for SIGHUP and SIGTERM
     signal(SIGHUP, handle_sighup);
     signal(SIGTERM, handle_sigterm);
+    signal(SIGINT, handle_sigint);
 
     SQM_LE_Device dev;
     GlobalConfig site;
+    AW_WeatherData weatherData;
+
+
 
     // Initialize health variables to false until we get positive indication
-    site.sqmHealthy = false;
+    site.sqmHealthy = false;    // Initialize to false to prevent reading uninitialized data in launched threads
     dev.reading_ready = false;
-    
+    weatherData.weatherReady = false;
+
     // Load site configuration from file
     if (load_site_config(&site) != 0) {
         printf("Failed to load site configuration from %s\n", default_config_file);
@@ -222,6 +308,20 @@ int main(void) {
     dev.port = site.sqmPort;
     dev.socket_fd = -1;
     dev.last_reading[0] = '\0';
+
+    // try to get the weather
+    if (aw_init(site.AmbientWeatherAPIKey, site.AmbientWeatherAppKey, site.AmbientWeatherEncodedMAC)) {
+            if (aw_get_current_weather(&weatherData)) {
+                printf("Weather data retrieved successfully.\n");
+                printf("Temperature: %f\n", weatherData.temperature_f);
+                weatherData.weatherReady = true;
+            } else {
+                printf("Failed to retrieve weather data.\n");
+            }
+            aw_cleanup();
+        } else {
+            printf("Failed to initialize AmbientWeather API client.\n");
+        }
 
     // Check if site.enableReadOnStartup is true, then set site.enableSQMread to true
     site.enableSQMread = site.enableReadOnStartup;  
@@ -248,6 +348,7 @@ int main(void) {
     // Main loop: periodically check unit information and launch reading thread
     time_t last_heartbeat = 0;
     time_t last_read = 0;
+    time_t last_weather = 0;
     while (1) {
         time_t now = time(NULL);
         // Heartbeat: check unit information
@@ -259,9 +360,14 @@ int main(void) {
         // Reading: launch reading thread if interval elapsed
         if (now - last_read >= site.readingInterval) {
             if (site.sqmHealthy == true && site.enableSQMread == true) {
-            launch_sqm_read_thread(&dev, &site);
+            launch_sqm_read_thread(&dev, &site, &weatherData);
             last_read = now;
             }
+        }
+        // Weather: launch weather thread if interval elapsed
+        if (now - last_weather >= site.AmbientWeatherUpdateInterval) {
+            launch_weather_thread(&site, &weatherData);
+            last_weather = now;
         }
         sleep(1);
     }

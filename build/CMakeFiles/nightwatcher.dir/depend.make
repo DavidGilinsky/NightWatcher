@@ -21,6 +21,7 @@ CMakeFiles/nightwatcher.dir/main.c.o: ../db_handler/db_handler.h
 CMakeFiles/nightwatcher.dir/main.c.o: ../main.c
 CMakeFiles/nightwatcher.dir/main.c.o: ../main.h
 CMakeFiles/nightwatcher.dir/main.c.o: ../sqm-le/sqm_le.h
+CMakeFiles/nightwatcher.dir/main.c.o: ../weather/AmbientWeather/AmbientWeather.h
 
 CMakeFiles/nightwatcher.dir/parser/parser.c.o: ../parser/parser.c
 CMakeFiles/nightwatcher.dir/parser/parser.c.o: ../parser/parser.h
@@ -29,4 +30,8 @@ CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o: ../main.h
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o: ../parser/parser.h
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o: ../sqm-le/sqm_le.c
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o: ../sqm-le/sqm_le.h
+
+CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o: ../main.h
+CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o: ../weather/AmbientWeather/AmbientWeather.c
+CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o: ../weather/AmbientWeather/AmbientWeather.h
 

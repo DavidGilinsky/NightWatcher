@@ -23,6 +23,21 @@ static void trim(char *str) {
     while (end > str && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')) *end-- = '\0';
 }
 
+// Helper: Function to percent-encode colons in MAC address
+void encode_mac(const char* mac, char* encoded_mac, size_t size, GlobalConfig *site) {
+    size_t j = 0;
+    for (size_t i = 0; mac[i] != '\0' && j < size - 1; ++i) {
+        if (mac[i] == ':') {
+            if (j + 1 >= size) break;
+            strcpy(&encoded_mac[j], "%3A");
+            j += 3;
+        } else {
+            encoded_mac[j++] = mac[i];
+        }
+    }
+    encoded_mac[j] = '\0';
+}
+
 /*
  * Reads a configuration file in key:value format and populates a GlobalConfig struct.
  * Parameters: cfg - pointer to GlobalConfig struct to populate.
@@ -56,9 +71,15 @@ int read_config(GlobalConfig *cfg, const char *filename) {
         else if (strcmp(key, "sqmHeartbeatInterval") == 0) cfg->sqmHeartbeatInterval = (unsigned int)atoi(val);
         else if (strcmp(key, "sqmReadTimeout") == 0) cfg->sqmReadTimeout = (unsigned int)atoi(val);
         else if (strcmp(key, "sqmWriteTimeout") == 0) cfg->sqmWriteTimeout = (unsigned int)atoi(val);
-    else if (strcmp(key, "enableReadOnStartup") == 0) cfg->enableReadOnStartup = (strcmp(val, "true") == 0 || strcmp(val, "1") == 0);
+        else if (strcmp(key, "enableReadOnStartup") == 0) cfg->enableReadOnStartup = (strcmp(val, "true") == 0 || strcmp(val, "1") == 0);
+        else if (strcmp(key, "AmbientWeatherAPIKey") == 0) strncpy(cfg->AmbientWeatherAPIKey, val, sizeof(cfg->AmbientWeatherAPIKey)-1);
+        else if (strcmp(key, "AmbientWeatherAppKey") == 0) strncpy(cfg->AmbientWeatherAppKey, val, sizeof(cfg->AmbientWeatherAppKey)-1);
+        else if (strcmp(key, "AmbientWeatherUpdateInterval") == 0) cfg->AmbientWeatherUpdateInterval = (unsigned int)atoi(val);
+        else if (strcmp(key, "AmbientWeatherDeviceMAC") == 0) strncpy(cfg->AmbientWeatherDeviceMAC, val, sizeof(cfg->AmbientWeatherDeviceMAC));
+        else if (strcmp(key, "enableWeather") == 0) cfg->enableWeather = (strcmp(val, "true") == 0 || strcmp(val, "1") == 0);
     }
     fclose(f);
+    encode_mac(cfg->AmbientWeatherDeviceMAC, cfg->AmbientWeatherEncodedMAC, sizeof(cfg->AmbientWeatherEncodedMAC), &cfg);
     return 0;
 }
 
@@ -102,3 +123,4 @@ int delete_config(GlobalConfig *cfg, const char *filename) {
     if (unlink(filename) == 0) return 0;
     return -1;
 }
+

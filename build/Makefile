@@ -285,6 +285,33 @@ sqm-le/sqm_le.c.s:
 	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.s
 .PHONY : sqm-le/sqm_le.c.s
 
+weather/AmbientWeather/AmbientWeather.o: weather/AmbientWeather/AmbientWeather.c.o
+
+.PHONY : weather/AmbientWeather/AmbientWeather.o
+
+# target to build an object file
+weather/AmbientWeather/AmbientWeather.c.o:
+	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o
+.PHONY : weather/AmbientWeather/AmbientWeather.c.o
+
+weather/AmbientWeather/AmbientWeather.i: weather/AmbientWeather/AmbientWeather.c.i
+
+.PHONY : weather/AmbientWeather/AmbientWeather.i
+
+# target to preprocess a source file
+weather/AmbientWeather/AmbientWeather.c.i:
+	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.i
+.PHONY : weather/AmbientWeather/AmbientWeather.c.i
+
+weather/AmbientWeather/AmbientWeather.s: weather/AmbientWeather/AmbientWeather.c.s
+
+.PHONY : weather/AmbientWeather/AmbientWeather.s
+
+# target to generate assembly for a file
+weather/AmbientWeather/AmbientWeather.c.s:
+	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.s
+.PHONY : weather/AmbientWeather/AmbientWeather.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -312,6 +339,9 @@ help:
 	@echo "... sqm-le/sqm_le.o"
 	@echo "... sqm-le/sqm_le.i"
 	@echo "... sqm-le/sqm_le.s"
+	@echo "... weather/AmbientWeather/AmbientWeather.o"
+	@echo "... weather/AmbientWeather/AmbientWeather.i"
+	@echo "... weather/AmbientWeather/AmbientWeather.s"
 .PHONY : help
 
 

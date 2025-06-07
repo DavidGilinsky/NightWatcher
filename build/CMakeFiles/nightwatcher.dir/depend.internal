@@ -22,6 +22,7 @@ CMakeFiles/nightwatcher.dir/main.c.o
  /home/gilinsky/devel/sqm/NightWatcher/main.c
  /home/gilinsky/devel/sqm/NightWatcher/main.h
  /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
+ /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h
 CMakeFiles/nightwatcher.dir/parser/parser.c.o
  /home/gilinsky/devel/sqm/NightWatcher/parser/parser.c
  /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
@@ -30,3 +31,7 @@ CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o
  /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
  /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.c
  /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
+CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o
+ /home/gilinsky/devel/sqm/NightWatcher/main.h
+ /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.c
+ /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h

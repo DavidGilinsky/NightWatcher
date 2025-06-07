@@ -6,5 +6,5 @@ C_FLAGS = -g -O0 -Wall -Wextra   -std=gnu99
 
 C_DEFINES = 
 
-C_INCLUDES = -I/home/gilinsky/devel/sqm/NightWatcher/sqm-le -I/home/gilinsky/devel/sqm/NightWatcher/parser -I/home/gilinsky/devel/sqm/NightWatcher/config_file_handler -I/home/gilinsky/devel/sqm/NightWatcher/db_handler -I/home/gilinsky/devel/sqm/NightWatcher/command_handler 
+C_INCLUDES = -I/home/gilinsky/devel/sqm/NightWatcher/sqm-le -I/home/gilinsky/devel/sqm/NightWatcher/parser -I/home/gilinsky/devel/sqm/NightWatcher/config_file_handler -I/home/gilinsky/devel/sqm/NightWatcher/db_handler -I/home/gilinsky/devel/sqm/NightWatcher/command_handler -I/home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather 
 

@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/nightwatcher.dir/main.c.o"
   "CMakeFiles/nightwatcher.dir/parser/parser.c.o"
   "CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o"
+  "CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o"
   "nightwatcher"
   "nightwatcher.pdb"
 )

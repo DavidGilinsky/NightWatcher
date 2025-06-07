@@ -99,6 +99,8 @@ gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c conf
 - Standard C library
 - rrdtool (with development headers and library)
 - pthreads (for threading)
+- libcjson (for JSON parsing, required by AmbientWeather integration)
+- libcurl (for Restful API integration)
 
 ## Example Usage
 - Loads configuration from `conf/nwconf.conf`
