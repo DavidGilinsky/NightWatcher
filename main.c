@@ -62,6 +62,34 @@ typedef struct {
     AW_WeatherData *weatherData;
 } ThreadArgs;
 
+// Struct to pass to thread
+typedef struct {
+    int client_fd;
+    GlobalConfig *site;
+    SQM_LE_Device *dev;
+    AW_WeatherData *weatherData;
+} ClientHandlerArgs;
+
+void* client_handler_thread(void* arg) {
+    ClientHandlerArgs* args = (ClientHandlerArgs*)arg;
+    int client_fd = args->client_fd;
+    GlobalConfig* site = args->site;
+    SQM_LE_Device* dev = args->dev;
+    AW_WeatherData* weatherData = args->weatherData;
+    free(args);
+
+    char buf[256] = {0};
+    ssize_t n = read(client_fd, buf, sizeof(buf) - 1);
+    if (n > 0) {
+        buf[n] = '\0';
+        char response[256] = {0};
+        handle_command(buf, response, sizeof(response), site, dev);
+        write(client_fd, response, strlen(response));
+    }
+    close(client_fd);
+    return NULL;
+}
+
 // TCP listener thread function
 void* tcp_listener_thread(void* arg) {
     ThreadArgs* args = (ThreadArgs*)arg;
@@ -87,26 +115,22 @@ void* tcp_listener_thread(void* arg) {
     }
     listen(server_fd, 5);
     fcntl(server_fd, F_SETFL, O_NONBLOCK);
-    while (1) {
-        struct sockaddr_in client_addr;
-        socklen_t client_len = sizeof(client_addr);
-        int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
-        if (client_fd >= 0) {
-            char buf[256] = {0};
-            ssize_t n = read(client_fd, buf, sizeof(buf) - 1);
-            if (n > 0) {
-                buf[n] = '\0';
-                char response[256] = {0};
-                handle_command(buf, response, sizeof(response), site, dev);
-                write(client_fd, response, strlen(response));
+
+        while (1) {
+            struct sockaddr_in client_addr;
+            socklen_t client_len = sizeof(client_addr);
+            int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
+            if (client_fd >= 0) {
+                ClientHandlerArgs* args = malloc(sizeof(ClientHandlerArgs));
+                args->client_fd = client_fd;
+                args->site = site;
+                args->dev = dev;
+                pthread_t client_thread;
+                pthread_create(&client_thread, NULL, client_handler_thread, args);
+                pthread_detach(client_thread); // Automatically reclaim resources when thread exits
             }
-            close(client_fd);
+            usleep(10000); // Sleep 10ms to avoid busy loop
         }
-        usleep(10000); // Sleep 10ms to avoid busy loop
-    }
-    close(server_fd);
-    free(args);
-    pthread_exit(NULL);
 }
 
 /*
