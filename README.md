@@ -5,12 +5,14 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 ## Features
 - Communicate with Unihedron SQM-LE devices over TCP/IP
 - Parse and process device readings, including calibration and environmental data
+- Retrieve current personal weather station data from AmbientWeather API (robust to missing fields, uses 999.99 for missing values)
 - Flexible configuration file management (key:value format)
-- Modular codebase: device communication, configuration, parsing, database, and command handling
+- Modular codebase: device communication, configuration, parsing, database, command handling, and weather integration
 - RRDTool-based time-series database for efficient storage and retrieval
 - Example configuration and parser utilities
 - Support for remote control via a configurable TCP control port
 - Threaded reading with timeout and health monitoring
+- Weather and SQM readings are each handled in their own threads
 - Health status (`site.sqmHealthy`) is checked after unit information retrieval; readings are only taken if the device is healthy
 - Signal handling for SIGHUP (reload/reinitialize) and SIGTERM (graceful shutdown)
 - Configurable options for enabling/disabling SQM reading and reading on startup
@@ -24,6 +26,7 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - `config_file_handler/` — Library for reading/writing/deleting config files
 - `db_handler/` — Library for RRDTool-based database management
 - `command_handler/` — Library for TCP command parsing and dispatch
+- `weather/AmbientWeather/` — C library for retrieving AmbientWeather personal weather station data (uses libcurl and libcjson)
 - `conf/` — Example configuration files
 - `main.c` — Main program with threaded reading, health monitoring, signal handling, main loop, and TCP listener thread
 - `CMakeLists.txt` — CMake build configuration file
@@ -100,6 +103,7 @@ gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c conf
 - rrdtool (with development headers and library)
 - pthreads (for threading)
 - libcjson (for JSON parsing, required by AmbientWeather integration)
+- libcurl (for HTTP requests, required by AmbientWeather integration)
 - libcurl (for Restful API integration)
 
 ## Example Usage
