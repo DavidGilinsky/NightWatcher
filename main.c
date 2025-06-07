@@ -78,7 +78,7 @@ void* client_handler_thread(void* arg) {
     if (n > 0) {
         buf[n] = '\0';
         char response[256] = {0};
-        handle_command(buf, response, sizeof(response), site, dev);
+        handle_command(buf, response, sizeof(response), site, dev, weatherData);
         write(client_fd, response, strlen(response));
     }
     close(client_fd);
@@ -90,6 +90,8 @@ void* tcp_listener_thread(void* arg) {
     ThreadArgs* args = (ThreadArgs*)arg;
     SQM_LE_Device* dev = args->dev;
     GlobalConfig* site = args->site;
+    AW_WeatherData* weatherData = args->weatherData;
+
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
         perror("socket");
@@ -120,6 +122,8 @@ void* tcp_listener_thread(void* arg) {
                 args->client_fd = client_fd;
                 args->site = site;
                 args->dev = dev;
+                args->weatherData = weatherData;
+
                 pthread_t client_thread;
                 pthread_create(&client_thread, NULL, client_handler_thread, args);
                 pthread_detach(client_thread); // Automatically reclaim resources when thread exits
@@ -361,6 +365,7 @@ int main(void) {
     ThreadArgs *tcp_args = malloc(sizeof(ThreadArgs));
     tcp_args->dev = &dev;
     tcp_args->site = &site;
+    tcp_args->weatherData = &weatherData;
     pthread_create(&tcp_thread, NULL, tcp_listener_thread, tcp_args);
 
 

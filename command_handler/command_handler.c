@@ -22,9 +22,33 @@ static void trim_whitespace(char *str) {
 }
 
 // Command: status
-void command_status(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+// Return the overall status of the site.
+// Return formation should be Status:[parameter]:[value]\n 
+void command_status(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
     (void)words; (void)nwords; (void)dev;
-    snprintf(response, response_size, "Status: SQM healthy = %s", site->sqmHealthy ? "true" : "false");
+    char temp[256];
+    if (site) {
+        snprintf(response, response_size, "Status:SQM Enabled:%s\n", site->enableSQMread ? "true" : "false");
+        snprintf(temp, sizeof(temp),"Status:SQM Healthy:%s\n", site->sqmHealthy ? "true" : "false");
+        strcat(response, temp);
+    } else {
+        snprintf(response, response_size, "Status:Site Initialized:false\n");
+    }
+    if (dev) {
+        snprintf(temp, sizeof(temp),"Status:SQM Reading Ready:%s\n", dev->reading_ready ? "true" : "false");
+        strcat(response, temp);
+    } else {
+        snprintf(temp, sizeof(temp), "Status:SQM Device Initialized:false\n");
+    }
+    if (weatherData) {
+        snprintf(temp, sizeof(temp), "Status:Weather Enabled:%s\n", site->enableWeather ? "true" : "false");
+        strcat(response, temp);
+        snprintf(temp, sizeof(temp),"Status:Weather Ready:%s\n", weatherData->weatherReady ? "true" : "false");
+        strcat(response, temp);
+    } else {
+        snprintf(temp, sizeof(temp), "Status:Weather Initialized:false\n");
+        strcat(response, temp);
+    }
 }
 
 // Command: show
@@ -89,7 +113,7 @@ void command_quit(char *words[], int nwords, char *response, size_t response_siz
  * Handles a command string received over TCP and writes a response to the response buffer.
  * Uses parse_fields from parser.c to split the command into words, trims each word, and dispatches.
  */
-void handle_command(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
+void handle_command(const char *cmd, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
     char word_bufs[8][64];
     char *words[8] = { word_bufs[0], word_bufs[1], word_bufs[2], word_bufs[3], word_bufs[4], word_bufs[5], word_bufs[6], word_bufs[7] };
     int nwords = parse_fields(cmd, ' ', words, 8, 64);
@@ -104,7 +128,7 @@ void handle_command(const char *cmd, char *response, size_t response_size, Globa
     for (char *p = words[0]; *p; ++p) *p = tolower((unsigned char)*p);
     printf("[DEBUG] Command word: '%s'\n", words[0]);
     if (strcmp(words[0], "status") == 0) {
-        command_status(words, nwords, response, response_size, site, dev);
+        command_status(words, nwords, response, response_size, site, dev, weatherData);
     } else if (strcmp(words[0], "show") == 0) {
         command_show(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "set") == 0) {

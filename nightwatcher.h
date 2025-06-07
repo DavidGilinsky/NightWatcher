@@ -6,7 +6,7 @@
 #include "parser/parser.h"
 #include "config_file_handler/config_file_handler.h"
 #include "db_handler/db_handler.h"
-#include "command_handler/command_handler.h"
 #include "weather/AmbientWeather/AmbientWeather.h"
+#include "command_handler/command_handler.h"
 
 #endif // NIGHTWATCHER_H

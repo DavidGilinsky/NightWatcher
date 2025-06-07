@@ -29,7 +29,7 @@ typedef struct {
     char AmbientWeatherDeviceMAC[17]; // Ambient Weather device MAC
     char AmbientWeatherEncodedMAC[28]; // Ambient Weather encoded MAC for URL construction
     bool enableWeather; // Enable Weather information retrieval
-    bool weatherReady; // True if weather data is ready
+//    bool weatherReady; // True if weather data is ready
 } GlobalConfig;
 
 int main(void);
