@@ -6,29 +6,43 @@
 
 #IncludeRegexTransform: 
 
+/home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.c
+command_handler.h
+/home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.h
+../parser/parser.h
+/home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+ctype.h
+-
+
+/home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.h
+../main.h
+/home/gilinsky/devel/sqm/NightWatcher/main.h
+../sqm-le/sqm_le.h
+/home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
+stddef.h
+-
+
 /home/gilinsky/devel/sqm/NightWatcher/main.h
 stdint.h
 -
 stdbool.h
 -
 
-/home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.c
-AmbientWeather.h
-/home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h
-stdio.h
+/home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
+stddef.h
 -
-stdlib.h
--
-string.h
--
-curl/curl.h
--
-cjson/cJSON.h
--
-../../main.h
-/home/gilinsky/devel/sqm/NightWatcher/main.h
 
-/home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h
-stdbool.h
+/home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.h
+stdint.h
 -
+stddef.h
+-
+../main.h
+/home/gilinsky/devel/sqm/NightWatcher/main.h
 

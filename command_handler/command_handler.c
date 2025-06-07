@@ -82,7 +82,8 @@ void command_db(char *words[], int nwords, char *response, size_t response_size,
 // Command: quit
 void command_quit(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
     (void)words; (void)nwords; (void)site; (void)dev;
-    snprintf(response, response_size, "Quit: Not implemented");
+    snprintf(response, response_size, "Quit: Exiting NightWatcher gracefully\n");
+    exit(0);
 }
 
 /*

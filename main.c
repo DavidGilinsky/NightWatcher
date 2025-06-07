@@ -248,7 +248,7 @@ void launch_weather_thread(GlobalConfig *site, AW_WeatherData *weatherData) {
     pthread_t tid;
     pthread_create(&tid, NULL, weather_reading_thread, weatherArgs);
 
- /* // Timeout mechanism
+  // Timeout mechanism
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         ts.tv_sec += site->sqmReadTimeout;
@@ -271,7 +271,7 @@ void launch_weather_thread(GlobalConfig *site, AW_WeatherData *weatherData) {
             pthread_cancel(tid);
             pthread_join(tid, NULL);
             site->sqmHealthy = false;
-        }  */ 
+        }   
 } 
 
 
