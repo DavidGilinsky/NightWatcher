@@ -2,7 +2,27 @@
 
 NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, robust health monitoring, signal handling, and a TCP command interface.
 
+## New: Console Interface
+
+A new subproject, `nwconsole`, provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
+
+- The latest SQM mpsqa reading and weather data (temperature, pressure, humidity).
+- Site name and location.
+- Update intervals for SQM and weather readings.
+
+### Building and Running nwconsole
+
+```
+cd nwconsole
+mkdir build
+cd build
+cmake ..
+make
+./nwconsole
+```
+
 ## Features
+
 - Communicate with Unihedron SQM-LE devices over TCP/IP
 - Parse and process device readings, including calibration and environmental data
 - Retrieve current personal weather station data from AmbientWeather API (robust to missing fields, uses 999.99 for missing values)
@@ -16,11 +36,23 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - Health status (`site.sqmHealthy`) is checked after unit information retrieval; readings are only taken if the device is healthy
 - Signal handling for SIGHUP (reload/reinitialize) and SIGTERM (graceful shutdown)
 - Configurable options for enabling/disabling SQM reading and reading on startup
-- Main loop periodically checks device health (site.sqmHeartbeatInterval) and launches reading threads (site.readingInterval); TCP command listener runs in a separate thread and does not block the main loop
-- TCP command parser robustly handles whitespace and case, and dispatches to command functions (status, show, set, start, stop, quit)
+- Main loop periodically checks device health (`site.sqmHeartbeatInterval`) and launches reading threads (`site.readingInterval`); TCP command listener runs in a separate thread and does not block the main loop
+- TCP command parser robustly handles whitespace and case, and dispatches to command functions (`status`, `show`, `set`, `start`, `stop`, `quit`, `dt`)
 - Extensible for additional sensors and site data
 
+## TCP Command Interface
+
+- Listens for TCP connections on `site.controlPort`
+- Supported commands:
+  - `status`: Returns overall system status (enabled, healthy, ready flags)
+  - `show reading`: Returns the latest SQM reading (mpsqa, temperature, pressure, humidity)
+  - `show weather`: Returns the latest weather data (temperature, pressure, humidity)
+  - `dt`: Transmits all site, device, and weather data in binary format
+  - `set`, `start`, `stop`, `quit`: Control commands
+
 ## Directory Structure
+
+- `nwconsole/` — Curses-based console client for NightWatcher (new)
 - `sqm-le/` — C library for SQM-LE device communication
 - `parser/` — Generic string parsing utilities
 - `config_file_handler/` — Library for reading/writing/deleting config files
@@ -35,6 +67,7 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 - `nightwatcher_db` — Default RRDTool database file (created at runtime)
 
 ## Configuration
+
 Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
 
 ```
@@ -47,39 +80,18 @@ sqmSerial:123456
 sqmIP:192.168.7.4
 sqmPort:10001
 dbName:nightwatcher_db
-readingInterval:300
+readingInterval:30
 controlPort:9000
-sqmHeartbeatInterval:60
+sqmHeartbeatInterval:10
 sqmReadTimeout:10
 sqmWriteTimeout:10
 enableReadOnStartup:true
+AmbientWeatherAPIKey:...
+AmbientWeatherAppKey:...
+AmbientWeatherUpdateInterval:60
+AmbientWeatherDeviceMAC:...
+enableWeather:true
 ```
-
-- `readingInterval`: Number of seconds between SQM readings
-- `controlPort`: TCP port on which to listen for remote commands
-- `sqmHeartbeatInterval`: Heartbeat interval in seconds (for health checks)
-- `sqmReadTimeout`: Timeout in seconds for SQM reading thread
-- `sqmWriteTimeout`: Timeout in seconds for SQM write operations
-- `enableReadOnStartup`: If true, perform a reading on startup
-- `enableSQMread`: (code only) Enable periodic SQM reading (not in config file)
-
-## Health Monitoring and Main Loop
-- The program checks the health of the SQM-LE device using unit information retrieval at intervals of `site.sqmHeartbeatInterval`.
-- The reading thread is launched at intervals of `site.readingInterval` if `site.sqmHealthy` and `site.enableSQMread` are true.
-- If a reading or parsing operation fails, `site.sqmHealthy` is set to false.
-- Health status is printed at the end of each run.
-- The main loop is non-blocking and does not handle TCP commands directly; the TCP command listener runs in a separate thread.
-- The main loop includes a recommended `usleep(10000);` (10 ms) at the end of each iteration to prevent busy-waiting and reduce CPU usage.
-
-## Command Handler
-- Listens for TCP connections on `site.controlPort`
-- Parses the first word of each command, ignoring whitespace and case
-- Supported commands: `status`, `show`, `set`, `start`, `stop`, `quit`
-- Each command function receives the command and a response buffer, and can interact with the site and device state
-
-## Signal Handling
-- SIGHUP: Triggers a reload or reinitialization (logic can be extended as needed)
-- SIGTERM: Triggers a graceful shutdown
 
 ## Build Instructions
 
@@ -92,28 +104,16 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug
 make
 ```
 
-Alternatively, you can build the project using gcc. For example:
+To build the console client:
 
 ```
-gcc -Wall -Wextra -g -o nightwatcher main.c sqm-le/sqm_le.c parser/parser.c config_file_handler/config_file_handler.c db_handler/db_handler.c command_handler/command_handler.c -lrrd -lpthread
+cd nwconsole
+mkdir build
+cd build
+cmake ..
+make
+./nwconsole
 ```
-
-## Dependencies
-- Standard C library
-- rrdtool (with development headers and library)
-- pthreads (for threading)
-- libcjson (for JSON parsing, required by AmbientWeather integration)
-- libcurl (for HTTP requests, required by AmbientWeather integration)
-- libcurl (for Restful API integration)
-
-## Example Usage
-- Loads configuration from `conf/nwconf.conf`
-- Connects to the SQM-LE device and retrieves readings in a separate thread (if healthy)
-- Stores readings and site/environmental data in an RRDTool database
-- Monitors health status and enforces timeouts on device communication
-- Handles SIGHUP and SIGTERM for reloading and graceful shutdown
-- Main loop ensures continuous health monitoring, periodic readings, and command processing
-- Ready for extension to support remote control and additional sensors
 
 ## License
 MIT License (or specify your license here)
