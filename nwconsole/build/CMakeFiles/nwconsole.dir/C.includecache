@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gilinsky/devel/sqm/NightWatcher/nwconsole/nwconsole.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+ncurses.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+nwconsole.h
+/home/gilinsky/devel/sqm/NightWatcher/nwconsole/nwconsole.h
+
+/home/gilinsky/devel/sqm/NightWatcher/nwconsole/nwconsole.h
+ncurses.h
+-
+

@@ -52,8 +52,8 @@ void command_status(char *words[], int nwords, char *response, size_t response_s
 }
 
 // Command: show
-void command_show(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev) {
-    (void)words; (void)nwords; (void)site; (void)dev;
+void command_show(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
+    (void)words; (void)nwords; (void)site; (void)dev; (void)weatherData;
 //  snprintf(response, response_size, "Show: Not implemented");
     if(site && dev) {
         if (strcmp(words[1], "reading") == 0) {
@@ -69,6 +69,17 @@ void command_show(char *words[], int nwords, char *response, size_t response_siz
         if (strcmp(words[1], "model") == 0) {
           snprintf(response, response_size, "Model: %d\n", dev->sqmModel); 
         }
+        if (strcmp(words[1], "weather") == 0) {
+          if (weatherData->weatherReady) {            
+            snprintf(response, response_size, "Weather:%f,%f,%f\n",
+                 weatherData->temperature_f, 
+                 weatherData->pressure_in, 
+                 weatherData->humidity);
+          } else {
+            snprintf(response, response_size, "Weather:Not ready\n");
+          }
+        }
+
     }
 }
 
@@ -109,6 +120,14 @@ void command_quit(char *words[], int nwords, char *response, size_t response_siz
     exit(0);
 }
 
+// command: dt - Data Transmit - transmit all data to the client
+void command_dt(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
+    (void)words; (void)nwords; (void)site; (void)dev; (void)weatherData;
+    int i;
+    memcpy(response, &site, sizeof(GlobalConfig));
+    memcpy(response + sizeof(GlobalConfig), &dev, sizeof(SQM_LE_Device));
+    memcpy(response + sizeof(GlobalConfig) + sizeof(SQM_LE_Device), &weatherData, sizeof(AW_WeatherData));
+}
 /*
  * Handles a command string received over TCP and writes a response to the response buffer.
  * Uses parse_fields from parser.c to split the command into words, trims each word, and dispatches.
@@ -130,7 +149,7 @@ void handle_command(const char *cmd, char *response, size_t response_size, Globa
     if (strcmp(words[0], "status") == 0) {
         command_status(words, nwords, response, response_size, site, dev, weatherData);
     } else if (strcmp(words[0], "show") == 0) {
-        command_show(words, nwords, response, response_size, site, dev);
+        command_show(words, nwords, response, response_size, site, dev, weatherData);
     } else if (strcmp(words[0], "set") == 0) {
         command_set(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "start") == 0) {
@@ -141,6 +160,8 @@ void handle_command(const char *cmd, char *response, size_t response_size, Globa
         command_db(words, nwords, response, response_size, site, dev);
     } else if (strcmp(words[0], "quit") == 0) {
         command_quit(words, nwords, response, response_size, site, dev);
+    } else if (strcmp(words[0], "dt") == 0) {
+        command_dt(words, nwords, response, response_size, site, dev, weatherData);
     } else {
         snprintf(response, response_size, "Unknown command: %s", words[0]);
     }
