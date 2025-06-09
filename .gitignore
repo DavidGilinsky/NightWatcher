@@ -1,0 +1,11 @@
+# Ignore build directories
+build/
+
+# Ignore build directories in subprojects
+nwconsole/build/
+
+# Ignore common editor and OS files
+*.swp
+*.swo
+*~
+.DS_Store
