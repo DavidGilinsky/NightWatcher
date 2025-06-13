@@ -4,6 +4,12 @@ build/
 # Ignore build directories in subprojects
 nwconsole/build/
 
+# Ignore local database files
+*_db
+
+# Ignore local config files
+*.conf
+
 # Ignore common editor and OS files
 *.swp
 *.swo
