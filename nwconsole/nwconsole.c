@@ -27,6 +27,27 @@ int connect_to_nightwatcher(const char *ip, int port) {
     return sock;
 }
 
+// Read IP and port from nwconsole.conf
+int read_nwconsole_conf(char *ip, size_t ip_len, int *port) {
+    FILE *f = fopen("conf/nwconsole.conf", "r");
+    if (!f) return -1;
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        char *key = strtok(line, ":\n");
+        char *val = strtok(NULL, "\n");
+        if (!key || !val) continue;
+        while (*val == ' ' || *val == '\t') val++;
+        if (strcmp(key, "ip") == 0) {
+            strncpy(ip, val, ip_len-1);
+            ip[ip_len-1] = '\0';
+        } else if (strcmp(key, "port") == 0) {
+            *port = atoi(val);
+        }
+    }
+    fclose(f);
+    return 0;
+}
+
 // Fetch data from NightWatcher
 int fetch_nw_data(int sock, NWData *data) {
     char sendbuf[128], recvbuf[1024];
@@ -115,11 +136,13 @@ int main() {
     WINDOW *win2 = newwin(height, width, height, 0);
     WINDOW *win3 = newwin(LINES - 2 * height, width, 2 * height, 0);
 
-    
+    char ip[64] = "127.0.0.1";
+    int port = 9000;
+    read_nwconsole_conf(ip, sizeof(ip), &port);
 
     NWData data;
     while (1) {
-        int sock = connect_to_nightwatcher(SERVER_IP, SERVER_PORT);
+        int sock = connect_to_nightwatcher(ip, port);
         if (sock < 0) {
             endwin();
             fprintf(stderr, "Failed to connect to NightWatcher TCP interface.\n");
