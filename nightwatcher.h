@@ -8,5 +8,6 @@
 #include "db_handler/db_handler.h"
 #include "weather/AmbientWeather/AmbientWeather.h"
 #include "command_handler/command_handler.h"
+#include "send_data/GilinskyResearch/nightwatcher_client.h"
 
 #endif // NIGHTWATCHER_H

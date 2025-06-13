@@ -16,6 +16,7 @@ typedef struct {
     char site_location[128];
     int sqm_interval;
     int weather_interval;
+    int enable_data_send; // 1 if enabled, 0 if not
 } NWData;
 
 int connect_to_nightwatcher(const char *ip, int port);

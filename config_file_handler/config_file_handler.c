@@ -77,6 +77,7 @@ int read_config(GlobalConfig *cfg, const char *filename) {
         else if (strcmp(key, "AmbientWeatherUpdateInterval") == 0) cfg->AmbientWeatherUpdateInterval = (unsigned int)atoi(val);
         else if (strcmp(key, "AmbientWeatherDeviceMAC") == 0) strncpy(cfg->AmbientWeatherDeviceMAC, val, sizeof(cfg->AmbientWeatherDeviceMAC));
         else if (strcmp(key, "enableWeather") == 0) cfg->enableWeather = (strcmp(val, "true") == 0 || strcmp(val, "1") == 0);
+        else if (strcmp(key, "enableDataSend") == 0) cfg->enableDataSend = (strcmp(val, "true") == 0 || strcmp(val, "1") == 0);
     }
     fclose(f);
     encode_mac(cfg->AmbientWeatherDeviceMAC, cfg->AmbientWeatherEncodedMAC, sizeof(cfg->AmbientWeatherEncodedMAC), &cfg);
@@ -107,6 +108,7 @@ int write_config(const GlobalConfig *cfg, const char *filename) {
     fprintf(f, "sqmReadTimeout:%u\n", cfg->sqmReadTimeout);
     fprintf(f, "sqmWriteTimeout:%u\n", cfg->sqmWriteTimeout);
     fprintf(f, "enableReadOnStartup:%s\n", cfg->enableReadOnStartup ? "true" : "false");
+    fprintf(f, "enableDataSend:%s\n", cfg->enableDataSend ? "true" : "false");
     fclose(f);
     return 0;
 }

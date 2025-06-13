@@ -164,6 +164,7 @@ void command_dt(char *words[], int nwords, char *response, size_t response_size,
     offset += snprintf(response + offset, response_size - offset, "%s,", site->AmbientWeatherAPIKey);
     offset += snprintf(response + offset, response_size - offset, "%s,", site->AmbientWeatherAppKey);
     offset += snprintf(response + offset, response_size - offset, "%d,", site->enableWeather ? 1 : 0);
+    offset += snprintf(response + offset, response_size - offset, "%d,", site->enableDataSend ? 1 : 0);
     offset += snprintf(response + offset, response_size - offset, "%d,", dev->sqmModel);
     offset += snprintf(response + offset, response_size - offset, "%d,", dev->sqmSerial);
     offset += snprintf(response + offset, response_size - offset, "%s,", dev->ip);

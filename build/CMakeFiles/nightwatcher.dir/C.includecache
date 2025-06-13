@@ -43,9 +43,15 @@ weather/AmbientWeather/AmbientWeather.h
 ../weather/AmbientWeather/AmbientWeather.h
 command_handler/command_handler.h
 ../command_handler/command_handler.h
+send_data/GilinskyResearch/nightwatcher_client.h
+../send_data/GilinskyResearch/nightwatcher_client.h
 
 ../parser/parser.h
 stddef.h
+-
+
+../send_data/GilinskyResearch/nightwatcher_client.h
+stdbool.h
 -
 
 ../sqm-le/sqm_le.h
@@ -163,6 +169,8 @@ weather/AmbientWeather/AmbientWeather.h
 /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.h
 command_handler/command_handler.h
 /home/gilinsky/devel/sqm/NightWatcher/command_handler/command_handler.h
+send_data/GilinskyResearch/nightwatcher_client.h
+/home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.h
 
 /home/gilinsky/devel/sqm/NightWatcher/parser/parser.c
 nightwatcher.h
@@ -172,6 +180,10 @@ string.h
 
 /home/gilinsky/devel/sqm/NightWatcher/parser/parser.h
 stddef.h
+-
+
+/home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.h
+stdbool.h
 -
 
 /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.c

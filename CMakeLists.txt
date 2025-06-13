@@ -21,7 +21,9 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/db_handler
     ${PROJECT_SOURCE_DIR}/command_handler
     ${PROJECT_SOURCE_DIR}/weather/AmbientWeather
+    ${PROJECT_SOURCE_DIR}/send_data/GilinskyResearch
 )
+
 
 # Gather all source files
 file(GLOB NIGHTWATCHER_SOURCES
@@ -32,8 +34,10 @@ file(GLOB NIGHTWATCHER_SOURCES
     ${PROJECT_SOURCE_DIR}/db_handler/*.c
     ${PROJECT_SOURCE_DIR}/command_handler/*.c
     ${PROJECT_SOURCE_DIR}/weather/AmbientWeather/*.c
+    ${PROJECT_SOURCE_DIR}/send_data/GilinskyResearch/*.c
 )
 
 add_executable(nightwatcher ${NIGHTWATCHER_SOURCES})
 
 target_link_libraries(nightwatcher rrd pthread cjson curl)
+
