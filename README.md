@@ -2,13 +2,24 @@
 
 NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, robust health monitoring, signal handling, and a TCP command interface.
 
-## New: Console Interface
+## Console Interface (`nwconsole`)
 
-A new subproject, `nwconsole`, provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
+The `nwconsole` subproject provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
 
-- The latest SQM mpsqa reading and weather data (temperature, pressure, humidity).
-- Site name and location.
-- Update intervals for SQM and weather readings.
+- The latest SQM mpsqa reading and weather data (temperature, pressure, humidity)
+- Site name and location
+- Update intervals for SQM and weather readings
+
+### nwconsole Configuration
+
+`nwconsole` now uses its own configuration file: `nwconsole/conf/nwconsole.conf`. This file uses a simple key:value format:
+
+```
+ip:127.0.0.1
+port:9000
+```
+
+The console client reads the IP address and port from this file at startup, allowing flexible deployment and connection to remote NightWatcher instances.
 
 ### Building and Running nwconsole
 
@@ -47,19 +58,19 @@ make
   - `status`: Returns overall system status (enabled, healthy, ready flags)
   - `show reading`: Returns the latest SQM reading (mpsqa, temperature, pressure, humidity)
   - `show weather`: Returns the latest weather data (temperature, pressure, humidity)
-  - `dt`: Transmits all site, device, and weather data in binary format
+  - `dt`: Returns all site, device, and weather data as a comma-separated string (for efficient bulk data retrieval and use by clients like nwconsole)
   - `set`, `start`, `stop`, `quit`: Control commands
 
 ## Directory Structure
 
-- `nwconsole/` — Curses-based console client for NightWatcher (new)
+- `nwconsole/` — Curses-based console client for NightWatcher (configurable via `nwconsole/conf/nwconsole.conf`)
 - `sqm-le/` — C library for SQM-LE device communication
 - `parser/` — Generic string parsing utilities
 - `config_file_handler/` — Library for reading/writing/deleting config files
 - `db_handler/` — Library for RRDTool-based database management
 - `command_handler/` — Library for TCP command parsing and dispatch
 - `weather/AmbientWeather/` — C library for retrieving AmbientWeather personal weather station data (uses libcurl and libcjson)
-- `conf/` — Example configuration files
+- `conf/` — Example configuration files for the main NightWatcher daemon
 - `main.c` — Main program with threaded reading, health monitoring, signal handling, main loop, and TCP listener thread
 - `CMakeLists.txt` — CMake build configuration file
 - `main.h` — Header for main program
@@ -67,6 +78,8 @@ make
 - `nightwatcher_db` — Default RRDTool database file (created at runtime)
 
 ## Configuration
+
+### Main Daemon
 
 Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
 
@@ -93,6 +106,15 @@ AmbientWeatherDeviceMAC:...
 enableWeather:true
 ```
 
+### nwconsole
+
+Configuration is managed via `nwconsole/conf/nwconsole.conf`:
+
+```
+ip:127.0.0.1
+port:9000
+```
+
 ## Build Instructions
 
 The recommended way to build the project is with CMake:
@@ -116,4 +138,5 @@ make
 ```
 
 ## License
+
 MIT License (or specify your license here)
