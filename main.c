@@ -78,7 +78,7 @@ void* client_handler_thread(void* arg) {
     ssize_t n = read(client_fd, buf, sizeof(buf) - 1);
     if (n > 0) {
         buf[n] = '\0';
-        char response[1024] = {0};
+        char response[2048] = {0};
         size_t response_size = sizeof(response); // set response size to the buffer size
         handle_command(buf, response, response_size, site, dev, weatherData);
         write(client_fd, response, strlen(response));

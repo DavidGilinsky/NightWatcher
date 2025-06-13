@@ -120,13 +120,73 @@ void command_quit(char *words[], int nwords, char *response, size_t response_siz
     exit(0);
 }
 
+// Helper: ensure all char arrays in structs are null-terminated and safe for snprintf
+static void sanitize_structs(GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
+    // GlobalConfig
+    site->siteName[sizeof(site->siteName)-1] = '\0';
+    site->sqmIP[sizeof(site->sqmIP)-1] = '\0';
+    site->dbName[sizeof(site->dbName)-1] = '\0';
+    site->AmbientWeatherAPIKey[sizeof(site->AmbientWeatherAPIKey)-1] = '\0';
+    site->AmbientWeatherAppKey[sizeof(site->AmbientWeatherAppKey)-1] = '\0';
+    site->AmbientWeatherDeviceMAC[sizeof(site->AmbientWeatherDeviceMAC)-1] = '\0';
+    site->AmbientWeatherEncodedMAC[sizeof(site->AmbientWeatherEncodedMAC)-1] = '\0';
+    // SQM_LE_Device
+    dev->ip[sizeof(dev->ip)-1] = '\0';
+    dev->last_reading[sizeof(dev->last_reading)-1] = '\0';
+    dev->unit_info[sizeof(dev->unit_info)-1] = '\0';
+    // AW_WeatherData
+    weatherData->timestamp[sizeof(weatherData->timestamp)-1] = '\0';
+}
+
 // command: dt - Data Transmit - transmit all data to the client
 void command_dt(char *words[], int nwords, char *response, size_t response_size, GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
     (void)words; (void)nwords; (void)site; (void)dev; (void)weatherData;
-    int i;
-    memcpy(response, &site, sizeof(GlobalConfig));
-    memcpy(response + sizeof(GlobalConfig), &dev, sizeof(SQM_LE_Device));
-    memcpy(response + sizeof(GlobalConfig) + sizeof(SQM_LE_Device), &weatherData, sizeof(AW_WeatherData));
+    sanitize_structs(site, dev, weatherData);
+    // Debug: build response incrementally, one variable at a time
+    size_t offset = 0;
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->siteName);
+    offset += snprintf(response + offset, response_size - offset, "%f,", site->latitude);
+    offset += snprintf(response + offset, response_size - offset, "%f,", site->longitude);
+    offset += snprintf(response + offset, response_size - offset, "%f,", site->elevation);
+    offset += snprintf(response + offset, response_size - offset, "%d,", site->sqmModel);
+    offset += snprintf(response + offset, response_size - offset, "%d,", site->sqmSerial);
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->sqmIP);
+    offset += snprintf(response + offset, response_size - offset, "%u,", site->sqmPort);
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->dbName);
+    offset += snprintf(response + offset, response_size - offset, "%u,", site->readingInterval);
+    offset += snprintf(response + offset, response_size - offset, "%u,", site->controlPort);
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->sqmHealthy ? "true" : "false");
+    offset += snprintf(response + offset, response_size - offset, "%u,", site->sqmHeartbeatInterval);
+    offset += snprintf(response + offset, response_size - offset, "%u,", site->sqmReadTimeout);
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->enableSQMread ? "true" : "false");
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->enableReadOnStartup ? "true" : "false");
+    offset += snprintf(response + offset, response_size - offset, "%u,", site->AmbientWeatherUpdateInterval);
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->AmbientWeatherAPIKey);
+    offset += snprintf(response + offset, response_size - offset, "%s,", site->AmbientWeatherAppKey);
+    offset += snprintf(response + offset, response_size - offset, "%d,", site->enableWeather ? 1 : 0);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->sqmModel);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->sqmSerial);
+    offset += snprintf(response + offset, response_size - offset, "%s,", dev->ip);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->port);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->socket_fd);
+    offset += snprintf(response + offset, response_size - offset, "%s,", dev->last_reading);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->reading_ready ? 1 : 0);
+    offset += snprintf(response + offset, response_size - offset, "%f,", dev->calibration);
+    offset += snprintf(response + offset, response_size - offset, "%s,", dev->unit_info);
+    offset += snprintf(response + offset, response_size - offset, "%f,", dev->mpsqa);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->sensorFreq);
+    offset += snprintf(response + offset, response_size - offset, "%d,", dev->sensorPeriodCount);
+    offset += snprintf(response + offset, response_size - offset, "%f,", dev->sensorPeriodSecs);
+    offset += snprintf(response + offset, response_size - offset, "%f,", dev->sensorTemp);
+    offset += snprintf(response + offset, response_size - offset, "%f,", weatherData->temperature_f);
+    offset += snprintf(response + offset, response_size - offset, "%f,", weatherData->humidity);
+    offset += snprintf(response + offset, response_size - offset, "%f,", weatherData->wind_speed_mph);
+    offset += snprintf(response + offset, response_size - offset, "%f,", weatherData->wind_gust_mph);
+    offset += snprintf(response + offset, response_size - offset, "%f,", weatherData->pressure_in);
+    offset += snprintf(response + offset, response_size - offset, "%f,", weatherData->rainfall_in);
+    offset += snprintf(response + offset, response_size - offset, "%s,", weatherData->timestamp);
+    offset += snprintf(response + offset, response_size - offset, "%d", weatherData->weatherReady ? 1 : 0);
+    response[response_size-1] = '\0';
 }
 /*
  * Handles a command string received over TCP and writes a response to the response buffer.
