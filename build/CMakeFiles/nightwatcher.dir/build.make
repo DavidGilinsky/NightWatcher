@@ -122,9 +122,22 @@ CMakeFiles/nightwatcher.dir/parser/parser.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/nightwatcher.dir/parser/parser.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/gilinsky/devel/sqm/NightWatcher/parser/parser.c -o CMakeFiles/nightwatcher.dir/parser/parser.c.s
 
+CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o: CMakeFiles/nightwatcher.dir/flags.make
+CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o: ../send_data/GilinskyResearch/nightwatcher_client.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o   -c /home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.c
+
+CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.c > CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.i
+
+CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.c -o CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.s
+
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o: CMakeFiles/nightwatcher.dir/flags.make
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o: ../sqm-le/sqm_le.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o   -c /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.c
 
 CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.i: cmake_force
@@ -137,7 +150,7 @@ CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.s: cmake_force
 
 CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o: CMakeFiles/nightwatcher.dir/flags.make
 CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o: ../weather/AmbientWeather/AmbientWeather.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o   -c /home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.c
 
 CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.i: cmake_force
@@ -155,6 +168,7 @@ nightwatcher_OBJECTS = \
 "CMakeFiles/nightwatcher.dir/db_handler/db_handler.c.o" \
 "CMakeFiles/nightwatcher.dir/main.c.o" \
 "CMakeFiles/nightwatcher.dir/parser/parser.c.o" \
+"CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o" \
 "CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o" \
 "CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o"
 
@@ -166,11 +180,12 @@ nightwatcher: CMakeFiles/nightwatcher.dir/config_file_handler/config_file_handle
 nightwatcher: CMakeFiles/nightwatcher.dir/db_handler/db_handler.c.o
 nightwatcher: CMakeFiles/nightwatcher.dir/main.c.o
 nightwatcher: CMakeFiles/nightwatcher.dir/parser/parser.c.o
+nightwatcher: CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o
 nightwatcher: CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o
 nightwatcher: CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o
 nightwatcher: CMakeFiles/nightwatcher.dir/build.make
 nightwatcher: CMakeFiles/nightwatcher.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable nightwatcher"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C executable nightwatcher"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/nightwatcher.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

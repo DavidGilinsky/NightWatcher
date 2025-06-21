@@ -258,6 +258,33 @@ parser/parser.c.s:
 	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/parser/parser.c.s
 .PHONY : parser/parser.c.s
 
+send_data/GilinskyResearch/nightwatcher_client.o: send_data/GilinskyResearch/nightwatcher_client.c.o
+
+.PHONY : send_data/GilinskyResearch/nightwatcher_client.o
+
+# target to build an object file
+send_data/GilinskyResearch/nightwatcher_client.c.o:
+	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o
+.PHONY : send_data/GilinskyResearch/nightwatcher_client.c.o
+
+send_data/GilinskyResearch/nightwatcher_client.i: send_data/GilinskyResearch/nightwatcher_client.c.i
+
+.PHONY : send_data/GilinskyResearch/nightwatcher_client.i
+
+# target to preprocess a source file
+send_data/GilinskyResearch/nightwatcher_client.c.i:
+	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.i
+.PHONY : send_data/GilinskyResearch/nightwatcher_client.c.i
+
+send_data/GilinskyResearch/nightwatcher_client.s: send_data/GilinskyResearch/nightwatcher_client.c.s
+
+.PHONY : send_data/GilinskyResearch/nightwatcher_client.s
+
+# target to generate assembly for a file
+send_data/GilinskyResearch/nightwatcher_client.c.s:
+	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.s
+.PHONY : send_data/GilinskyResearch/nightwatcher_client.c.s
+
 sqm-le/sqm_le.o: sqm-le/sqm_le.c.o
 
 .PHONY : sqm-le/sqm_le.o
@@ -336,6 +363,9 @@ help:
 	@echo "... parser/parser.o"
 	@echo "... parser/parser.i"
 	@echo "... parser/parser.s"
+	@echo "... send_data/GilinskyResearch/nightwatcher_client.o"
+	@echo "... send_data/GilinskyResearch/nightwatcher_client.i"
+	@echo "... send_data/GilinskyResearch/nightwatcher_client.s"
 	@echo "... sqm-le/sqm_le.o"
 	@echo "... sqm-le/sqm_le.i"
 	@echo "... sqm-le/sqm_le.s"

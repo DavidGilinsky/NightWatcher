@@ -74,12 +74,12 @@ clean: CMakeFiles/nightwatcher.dir/clean
 CMakeFiles/nightwatcher.dir/all:
 	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/depend
 	$(MAKE) -f CMakeFiles/nightwatcher.dir/build.make CMakeFiles/nightwatcher.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target nightwatcher"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target nightwatcher"
 .PHONY : CMakeFiles/nightwatcher.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/nightwatcher.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles 9
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/nightwatcher.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles 0
 .PHONY : CMakeFiles/nightwatcher.dir/rule

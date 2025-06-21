@@ -1,11 +1,11 @@
 (function (blocks, element) {
     var el = element.createElement;
-    blocks.registerBlockType('nightwatcher/latest-data', {
-        title: 'NightWatcher Latest Data',
+    blocks.registerBlockType('nightwatcher/simple', {
+        title: 'NightWatcher',
         icon: 'visibility',
         category: 'widgets',
         edit: function () {
-            return el('div', {}, 'NightWatcher Latest Data block. Data will be shown on the site.');
+            return el('div', {}, 'NightWatcher');
         },
         save: function () {
             return null; // Server-side rendering

@@ -6,11 +6,7 @@
 #include <curl/curl.h>
 #include <stdbool.h>
 
-struct nightwatcher_api_config {
-    char url[256];
-    char username[128];
-    char password[128];
-};
+
 
 static void trim(char *str) {
     char *end;
@@ -69,16 +65,17 @@ bool nightwatcher_send_data(const char *url, const char *username, const char *a
     char json[1024];
     // Use site, dev, and weather_data to fill the fields
     // For datetime, use weather_data->datetime if available, else dev->datetime, else ""
-    const char *datetime = weather_data->datetime[0] ? weather_data->datetime : (dev->datetime[0] ? dev->datetime : "");
+//    const char *datetime = weather_data->timestamp[0] ? weather_data->timestamp : (dev->datetime[0] ? dev->datetime : "");
+    const char *datetime = dev->last_reading_timestamp[0]  ? dev->last_reading_timestamp : "";
     snprintf(json, sizeof(json),
         "{\"datetime\":\"%s\",\"site_name\":\"%s\",\"latitude\":%.8f,\"longitude\":%.8f,\"mpsqa\":%.4f,\"temperature\":%.2f,\"pressure\":%.2f,\"humidity\":%.2f}",
         datetime,
         site->siteName,
         site->latitude,
         site->longitude,
-        dev->mpsas,
-        weather_data->temperature,
-        weather_data->pressure,
+        dev->mpsqa,
+        weather_data->temperature_f,
+        weather_data->pressure_in,
         weather_data->humidity);
 
     // Prepare HTTP Basic Auth string

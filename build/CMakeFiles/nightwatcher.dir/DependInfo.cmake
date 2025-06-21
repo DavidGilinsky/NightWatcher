@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/gilinsky/devel/sqm/NightWatcher/db_handler/db_handler.c" "/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir/db_handler/db_handler.c.o"
   "/home/gilinsky/devel/sqm/NightWatcher/main.c" "/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir/main.c.o"
   "/home/gilinsky/devel/sqm/NightWatcher/parser/parser.c" "/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir/parser/parser.c.o"
+  "/home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.c" "/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir/send_data/GilinskyResearch/nightwatcher_client.c.o"
   "/home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.c" "/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir/sqm-le/sqm_le.c.o"
   "/home/gilinsky/devel/sqm/NightWatcher/weather/AmbientWeather/AmbientWeather.c" "/home/gilinsky/devel/sqm/NightWatcher/build/CMakeFiles/nightwatcher.dir/weather/AmbientWeather/AmbientWeather.c.o"
   )
@@ -23,6 +24,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "../db_handler"
   "../command_handler"
   "../weather/AmbientWeather"
+  "../send_data/GilinskyResearch"
   )
 
 # Targets to which this target links.

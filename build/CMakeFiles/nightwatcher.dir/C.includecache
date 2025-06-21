@@ -53,6 +53,8 @@ stddef.h
 ../send_data/GilinskyResearch/nightwatcher_client.h
 stdbool.h
 -
+../../nightwatcher.h
+../nightwatcher.h
 
 ../sqm-le/sqm_le.h
 stdint.h
@@ -182,9 +184,27 @@ string.h
 stddef.h
 -
 
+/home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.c
+nightwatcher_client.h
+/home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.h
+../../nightwatcher.h
+/home/gilinsky/devel/sqm/NightWatcher/nightwatcher.h
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+curl/curl.h
+-
+stdbool.h
+-
+
 /home/gilinsky/devel/sqm/NightWatcher/send_data/GilinskyResearch/nightwatcher_client.h
 stdbool.h
 -
+../../nightwatcher.h
+/home/gilinsky/devel/sqm/NightWatcher/nightwatcher.h
 
 /home/gilinsky/devel/sqm/NightWatcher/sqm-le/sqm_le.c
 nightwatcher.h

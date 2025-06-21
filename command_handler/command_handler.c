@@ -171,6 +171,7 @@ void command_dt(char *words[], int nwords, char *response, size_t response_size,
     offset += snprintf(response + offset, response_size - offset, "%d,", dev->port);
     offset += snprintf(response + offset, response_size - offset, "%d,", dev->socket_fd);
     offset += snprintf(response + offset, response_size - offset, "%s,", dev->last_reading);
+    offset += snprintf(response + offset, response_size - offset, "%s,", dev->last_reading_timestamp);
     offset += snprintf(response + offset, response_size - offset, "%d,", dev->reading_ready ? 1 : 0);
     offset += snprintf(response + offset, response_size - offset, "%f,", dev->calibration);
     offset += snprintf(response + offset, response_size - offset, "%s,", dev->unit_info);

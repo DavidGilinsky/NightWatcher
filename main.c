@@ -185,8 +185,27 @@ void* sqm_reading_thread(void* arg) {
     } else {
         printf("Failed to get reading, error code: %d\n", ret);
     }
+    // After reading is complete, attempt to send data if ready
+    send_data(site, dev, weatherData);
     free(args);
     return NULL;
+}
+
+// Send data to WordPress REST API if both weather and reading are ready
+void send_data(GlobalConfig *site, SQM_LE_Device *dev, AW_WeatherData *weatherData) {
+    if (weatherData->weatherReady && dev->reading_ready) {
+        // Only send if enabled
+        if (site->enableDataSend) {
+            struct nightwatcher_api_config cfg = {0};
+            if (nightwatcher_load_api_config("gilinskyresearch.conf", &cfg)) {
+                char response[256];
+                nightwatcher_send_data(cfg.url, cfg.username, cfg.password, site, dev, weatherData, response, sizeof(response));
+                printf("Sent data to NightWatcher API.\n");
+            } else {
+                printf("Failed to load API config for data send.\n");
+            }
+        }
+    }
 }
 
 

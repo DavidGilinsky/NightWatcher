@@ -16,6 +16,7 @@ typedef struct {
     int sqmModel;
     int sqmSerial;
     char last_reading[64];
+    char last_reading_timestamp[32]; 
     bool reading_ready;
     float calibration;
     char unit_info[64];
