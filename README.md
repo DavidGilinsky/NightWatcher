@@ -70,6 +70,8 @@ make
 - `db_handler/` — Library for RRDTool-based database management
 - `command_handler/` — Library for TCP command parsing and dispatch
 - `weather/AmbientWeather/` — C library for retrieving AmbientWeather personal weather station data (uses libcurl and libcjson)
+- `send_data/GilinskyResearch/` — C client for sending data to a WordPress REST API endpoint
+- `WordPress_Plugin/` — WordPress plugin providing a REST API endpoint and block for NightWatcher data
 - `conf/` — Example configuration files for the main NightWatcher daemon
 - `main.c` — Main program with threaded reading, health monitoring, signal handling, main loop, and TCP listener thread
 - `CMakeLists.txt` — CMake build configuration file
@@ -104,7 +106,10 @@ AmbientWeatherAppKey:...
 AmbientWeatherUpdateInterval:60
 AmbientWeatherDeviceMAC:...
 enableWeather:true
+enableDataSend:false
 ```
+
+- `enableDataSend`: Set to `true` to enable sending data to a remote WordPress REST API endpoint (see below).
 
 ### nwconsole
 
@@ -114,6 +119,25 @@ Configuration is managed via `nwconsole/conf/nwconsole.conf`:
 ip:127.0.0.1
 port:9000
 ```
+
+## Data Sending and WordPress Integration
+
+NightWatcher can send data to a remote WordPress REST API endpoint for integration with web dashboards or other systems. This is controlled by the `enableDataSend` option in the main configuration file. The client implementation is in `send_data/GilinskyResearch/nightwatcher_client.c`, and credentials/endpoint are configured in `send_data/GilinskyResearch/gilinskyresearch.conf`:
+
+```
+url:https://example.com/wp-json/nightwatcher/v1/submit
+username:apiuser
+password:apipass
+```
+
+### WordPress Plugin
+
+The `WordPress_Plugin/` directory contains a plugin that provides:
+- A REST API endpoint (`/wp-json/nightwatcher/v1/submit`) for receiving data from NightWatcher
+- A setup page for configuring the database and user
+- A simple block for displaying NightWatcher data in the WordPress editor
+
+The plugin verifies database/user privileges, creates a table, and authenticates incoming data via HTTP Basic Auth.
 
 ## Build Instructions
 
