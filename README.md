@@ -1,8 +1,8 @@
 # NightWatcher
 
-NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, robust health monitoring, signal handling, and a TCP command interface.
+NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the [Unihedron SQM-LE sky quality meter](https://www.unihedron.com/projects/darksky/), with extensible support for site environmental data, remote control, robust health monitoring, signal handling, and a TCP command interface.
 
-Public Repository: https://github.com/DavidGilinsky/NightWatcher
+[Public Repository](https://github.com/DavidGilinsky/NightWatcher)
 
 ## Features
 
@@ -35,6 +35,8 @@ Public Repository: https://github.com/DavidGilinsky/NightWatcher
 
 
 ## Console Interface (`nwconsole`)
+
+![nwconsole screenshot](https://github.com/DavidGilinsky/NightWatcher/blob/master/docs/nwconsole_screenshot.png)
 
 The `nwconsole` subproject provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
 
