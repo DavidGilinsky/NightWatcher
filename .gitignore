@@ -5,7 +5,7 @@ build/
 nwconsole/build/
 
 # Ignore local database files
-*_db
+nightwatcher_db
 
 # Ignore local config files
 *.conf
