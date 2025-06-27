@@ -1,5 +1,5 @@
 # Ignore build directories
-build/
+**/build/
 
 # Ignore build directories in subprojects
 nwconsole/build/
