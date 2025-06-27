@@ -75,11 +75,11 @@ int fetch_nw_data(int sock, NWData *data) {
         // mpsqa is field 28 (0-based index)
         data->mpsqa = (i > 28) ? atof(fields[27]) : 0;
         // temperature is field 34 (AW_WeatherData.temperature_f)
-        data->temperature = (i > 44) ? atof(fields[44]) : 0;
+        data->temperature = (i > 44) ? atof(fields[45]) : 0;
         // pressure is field 38 (AW_WeatherData.pressure_in)
-        data->pressure = (i > 48) ? atof(fields[48]) : 0;
+        data->pressure = (i > 48) ? atof(fields[49]) : 0;
         // humidity is field 35 (AW_WeatherData.humidity)
-        data->humidity = (i > 45) ? atof(fields[45]) : 0;
+        data->humidity = (i > 45) ? atof(fields[46]) : 0;
         // site_name is field 0
         strncpy(data->site_name, fields[0], sizeof(data->site_name)-1);
         data->site_name[sizeof(data->site_name)-1] = '\0';
