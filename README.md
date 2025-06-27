@@ -83,29 +83,74 @@ make
 
 ### Main Daemon
 
-Configuration is managed via a key:value file (see `conf/nwconf.conf`). Example fields:
+Configuration is managed via a key:value file (see `conf/nwconf.conf.example`). Example fields:
 
 ```
-siteName:Cresta Loma
-latitude:32.30316
-longitude:110.98590
-elevation:719.33
-sqmModel:200
-sqmSerial:123456
-sqmIP:192.168.7.4
-sqmPort:10001
-dbName:nightwatcher_db
-readingInterval:30
-controlPort:9000
-sqmHeartbeatInterval:10
-sqmReadTimeout:10
-sqmWriteTimeout:10
+# NightWatcher Main Configuration Example
+# This file documents all available configuration options for NightWatcher.
+# Fill in values appropriate for your deployment. Do not include secrets in this example file.
+
+# Name of the site or installation location
+siteName:YOUR_SITE_NAME
+
+# Latitude of the site (decimal degrees)
+latitude:0.00000
+
+# Longitude of the site (decimal degrees)
+longitude:0.00000
+
+# Elevation above sea level (meters)
+elevation:0.0
+
+# Model number of the SQM device
+sqmModel:MODEL_NUMBER
+
+# Serial number of the SQM device
+sqmSerial:SERIAL_NUMBER
+
+# IP address of the SQM device
+sqmIP:DEVICE_IP_ADDRESS
+
+# Port number for the SQM device
+sqmPort:PORT_NUMBER
+
+# Name of the database to use
+dbName:DATABASE_NAME
+
+# Interval (in seconds) between readings
+readingInterval:SECONDS
+
+# Port for control commands
+controlPort:PORT_NUMBER
+
+# Heartbeat interval for the SQM device (seconds)
+sqmHeartbeatInterval:SECONDS
+
+# Timeout for reading from the SQM device (seconds)
+sqmReadTimeout:SECONDS
+
+# Timeout for writing to the SQM device (seconds)
+sqmWriteTimeout:SECONDS
+
+# Whether to enable reading on startup (true/false)
 enableReadOnStartup:true
-AmbientWeatherAPIKey:...
-AmbientWeatherAppKey:...
-AmbientWeatherUpdateInterval:60
-AmbientWeatherDeviceMAC:...
+
+# AmbientWeather API Key (leave blank in example)
+AmbientWeatherAPIKey:
+
+# AmbientWeather App Key (leave blank in example)
+AmbientWeatherAppKey:
+
+# Update interval for AmbientWeather (seconds)
+AmbientWeatherUpdateInterval:SECONDS
+
+# MAC address of the AmbientWeather device
+AmbientWeatherDeviceMAC:XX:XX:XX:XX:XX:XX
+
+# Whether to enable weather integration (true/false)
 enableWeather:true
+
+# Whether to enable data sending (true/false)
 enableDataSend:false
 ```
 
@@ -113,21 +158,37 @@ enableDataSend:false
 
 ### nwconsole
 
-Configuration is managed via `nwconsole/conf/nwconsole.conf`:
+Configuration is managed via `nwconsole/conf/nwconsole.conf.example`:
 
 ```
-ip:127.0.0.1
-port:9000
+# NightWatcher Console Configuration Example
+# This file documents the configuration options for the NightWatcher console client.
+# Fill in values appropriate for your deployment.
+
+# IP address of the NightWatcher server
+ip:SERVER_IP_ADDRESS
+
+# Port number to connect to on the NightWatcher server
+port:PORT_NUMBER
 ```
 
 ## Data Sending and WordPress Integration
 
-NightWatcher can send data to a remote WordPress REST API endpoint for integration with web dashboards or other systems. This is controlled by the `enableDataSend` option in the main configuration file. The client implementation is in `send_data/GilinskyResearch/nightwatcher_client.c`, and credentials/endpoint are configured in `send_data/GilinskyResearch/gilinskyresearch.conf`:
+NightWatcher can send data to a remote WordPress REST API endpoint for integration with web dashboards or other systems. This is controlled by the `enableDataSend` option in the main configuration file. The client implementation is in `send_data/GilinskyResearch/nightwatcher_client.c`, and credentials/endpoint are configured in `send_data/GilinskyResearch/gilinskyresearch.conf.example`:
 
 ```
-url:https://example.com/wp-json/nightwatcher/v1/submit
-username:apiuser
-password:apipass
+# GilinskyResearch Data Submission Configuration Example
+# This file documents the configuration options for submitting data to GilinskyResearch.
+# Do not include real credentials in this example file.
+
+# URL endpoint for data submission
+url:https://YOUR_SERVER_URL/wp-json/nightwatcher/v1/submit
+
+# Username for authentication
+username:YOUR_USERNAME
+
+# Password or API key for authentication (leave blank in example)
+password:
 ```
 
 ### WordPress Plugin
