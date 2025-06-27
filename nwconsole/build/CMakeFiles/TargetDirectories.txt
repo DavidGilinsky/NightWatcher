@@ -1,3 +1,0 @@
-/home/gilinsky/devel/sqm/NightWatcher/nwconsole/build/CMakeFiles/rebuild_cache.dir
-/home/gilinsky/devel/sqm/NightWatcher/nwconsole/build/CMakeFiles/edit_cache.dir
-/home/gilinsky/devel/sqm/NightWatcher/nwconsole/build/CMakeFiles/nwconsole.dir
