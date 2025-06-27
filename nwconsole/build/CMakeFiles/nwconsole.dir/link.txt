@@ -1,1 +1,1 @@
-/usr/bin/cc -g   CMakeFiles/nwconsole.dir/nwconsole.c.o  -o nwconsole  -lncurses 
+/usr/bin/cc    CMakeFiles/nwconsole.dir/nwconsole.c.o  -o nwconsole  -lncurses 
