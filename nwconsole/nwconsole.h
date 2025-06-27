@@ -1,3 +1,9 @@
+/*
+ * Project: NightWatcher
+ * File: nwconsole.h
+ * Author: David Gilinsky - gilinsky@gilinskyresearch.com
+ * Date: 5 June 2025
+ */
 #ifndef NWCONSOLE_H
 #define NWCONSOLE_H
 

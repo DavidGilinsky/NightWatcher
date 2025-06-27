@@ -1,4 +1,10 @@
 
+/*
+ * Project: NightWatcher
+ * File: nightwatcher_client.c
+ * Author: David Gilinsky - gilinsky@gilinskyresearch.com
+ * Date: 5 June 2025
+ */
 #include "../../nightwatcher.h"
 #include "nightwatcher_client.h"
 #include <stdio.h>

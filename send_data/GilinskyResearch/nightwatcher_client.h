@@ -1,3 +1,9 @@
+/*
+ * Project: NightWatcher
+ * File: nightwatcher_client.h
+ * Author: David Gilinsky - gilinsky@gilinskyresearch.com
+ * Date: 5 June 2025
+ */
 #ifndef NIGHTWATCHER_CLIENT_H
 #define NIGHTWATCHER_CLIENT_H
 

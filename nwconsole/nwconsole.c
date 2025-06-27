@@ -1,3 +1,9 @@
+/*
+ * Project: NightWatcher
+ * File: nwconsole.c
+ * Author: David Gilinsky - gilinsky@gilinskyresearch.com
+ * Date: 5 June 2025
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

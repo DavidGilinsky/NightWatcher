@@ -1,3 +1,9 @@
+/*
+ * Project: NightWatcher
+ * File: main.h
+ * Author: David Gilinsky - gilinsky@gilinskyresearch.com
+ * Date: 5 June 2025
+ */
 #ifndef MAIN_H
 #define MAIN_H
 
