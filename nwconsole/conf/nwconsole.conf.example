@@ -1,0 +1,9 @@
+# NightWatcher Console Configuration Example
+# This file documents the configuration options for the NightWatcher console client.
+# Fill in values appropriate for your deployment.
+
+# IP address of the NightWatcher server
+ip:SERVER_IP_ADDRESS
+
+# Port number to connect to on the NightWatcher server
+port:PORT_NUMBER

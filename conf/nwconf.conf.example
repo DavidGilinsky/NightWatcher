@@ -1,0 +1,66 @@
+# NightWatcher Main Configuration Example
+# This file documents all available configuration options for NightWatcher.
+# Fill in values appropriate for your deployment. Do not include secrets in this example file.
+
+# Name of the site or installation location
+siteName:YOUR_SITE_NAME
+
+# Latitude of the site (decimal degrees)
+latitude:0.00000
+
+# Longitude of the site (decimal degrees)
+longitude:0.00000
+
+# Elevation above sea level (meters)
+elevation:0.0
+
+# Model number of the SQM device
+sqmModel:MODEL_NUMBER
+
+# Serial number of the SQM device
+sqmSerial:SERIAL_NUMBER
+
+# IP address of the SQM device
+sqmIP:DEVICE_IP_ADDRESS
+
+# Port number for the SQM device
+sqmPort:PORT_NUMBER
+
+# Name of the database to use
+dbName:DATABASE_NAME
+
+# Interval (in seconds) between readings
+readingInterval:SECONDS
+
+# Port for control commands
+controlPort:PORT_NUMBER
+
+# Heartbeat interval for the SQM device (seconds)
+sqmHeartbeatInterval:SECONDS
+
+# Timeout for reading from the SQM device (seconds)
+sqmReadTimeout:SECONDS
+
+# Timeout for writing to the SQM device (seconds)
+sqmWriteTimeout:SECONDS
+
+# Whether to enable reading on startup (true/false)
+enableReadOnStartup:true
+
+# AmbientWeather API Key (leave blank in example)
+AmbientWeatherAPIKey:
+
+# AmbientWeather App Key (leave blank in example)
+AmbientWeatherAppKey:
+
+# Update interval for AmbientWeather (seconds)
+AmbientWeatherUpdateInterval:SECONDS
+
+# MAC address of the AmbientWeather device
+AmbientWeatherDeviceMAC:XX:XX:XX:XX:XX:XX
+
+# Whether to enable weather integration (true/false)
+enableWeather:true
+
+# Whether to enable data sending (true/false)
+enableDataSend:false

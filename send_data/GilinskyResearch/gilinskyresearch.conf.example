@@ -1,0 +1,12 @@
+# GilinskyResearch Data Submission Configuration Example
+# This file documents the configuration options for submitting data to GilinskyResearch.
+# Do not include real credentials in this example file.
+
+# URL endpoint for data submission
+url:https://YOUR_SERVER_URL/wp-json/nightwatcher/v1/submit
+
+# Username for authentication
+username:YOUR_USERNAME
+
+# Password or API key for authentication (leave blank in example)
+password:
