@@ -36,6 +36,8 @@ NightWatcher is a modular C-based system for automated sky quality monitoring, s
 
 ## Console Interface (`nwconsole`)
 
+![nwconsole screenshot](https://github.com/DavidGilinsky/NightWatcher/blob/master/docs/nwconsole_screenshot.png)
+
 The `nwconsole` subproject provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
 
 - The latest SQM mpsqa reading and weather data (temperature, pressure, humidity)
