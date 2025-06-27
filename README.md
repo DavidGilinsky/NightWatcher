@@ -2,36 +2,6 @@
 
 NightWatcher is a modular C-based system for automated sky quality monitoring, site configuration management, and data logging/analysis. It is designed for observatories and research sites using the Unihedron SQM-LE sky quality meter, with extensible support for site environmental data, remote control, robust health monitoring, signal handling, and a TCP command interface.
 
-## Console Interface (`nwconsole`)
-
-The `nwconsole` subproject provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
-
-- The latest SQM mpsqa reading and weather data (temperature, pressure, humidity)
-- Site name and location
-- Update intervals for SQM and weather readings
-
-### nwconsole Configuration
-
-`nwconsole` now uses its own configuration file: `nwconsole/conf/nwconsole.conf`. This file uses a simple key:value format:
-
-```
-ip:127.0.0.1
-port:9000
-```
-
-The console client reads the IP address and port from this file at startup, allowing flexible deployment and connection to remote NightWatcher instances.
-
-### Building and Running nwconsole
-
-```
-cd nwconsole
-mkdir build
-cd build
-cmake ..
-make
-./nwconsole
-```
-
 ## Features
 
 - Communicate with Unihedron SQM-LE devices over TCP/IP
@@ -60,6 +30,45 @@ make
   - `show weather`: Returns the latest weather data (temperature, pressure, humidity)
   - `dt`: Returns all site, device, and weather data as a comma-separated string (for efficient bulk data retrieval and use by clients like nwconsole)
   - `set`, `start`, `stop`, `quit`: Control commands
+
+
+## Console Interface (`nwconsole`)
+
+The `nwconsole` subproject provides a curses-based console interface to NightWatcher. It connects to the NightWatcher process via the TCP command interface and displays:
+
+- The latest SQM mpsqa reading and weather data (temperature, pressure, humidity)
+- Site name and location
+- Update intervals for SQM and weather readings
+
+### nwconsole Configuration
+
+Configuration is managed via `nwconsole/conf/nwconsole.conf.example`:
+
+```
+# NightWatcher Console Configuration Example
+# This file documents the configuration options for the NightWatcher console client.
+# Fill in values appropriate for your deployment.
+
+# IP address of the NightWatcher server
+ip:SERVER_IP_ADDRESS
+
+# Port number to connect to on the NightWatcher server
+port:PORT_NUMBER
+```
+
+The console client reads the IP address and port from this file at startup, allowing flexible deployment and connection to remote NightWatcher instances.
+
+### Building and Running nwconsole
+
+```
+cd nwconsole
+mkdir build
+cd build
+cmake ..
+make
+./nwconsole
+```
+
 
 ## Directory Structure
 
@@ -156,21 +165,7 @@ enableDataSend:false
 
 - `enableDataSend`: Set to `true` to enable sending data to a remote WordPress REST API endpoint (see below).
 
-### nwconsole
 
-Configuration is managed via `nwconsole/conf/nwconsole.conf.example`:
-
-```
-# NightWatcher Console Configuration Example
-# This file documents the configuration options for the NightWatcher console client.
-# Fill in values appropriate for your deployment.
-
-# IP address of the NightWatcher server
-ip:SERVER_IP_ADDRESS
-
-# Port number to connect to on the NightWatcher server
-port:PORT_NUMBER
-```
 
 ## Data Sending and WordPress Integration
 
