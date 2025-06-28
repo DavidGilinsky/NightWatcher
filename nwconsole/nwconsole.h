@@ -13,7 +13,7 @@
 #define SERVER_PORT 9000         // Change as needed
 #define BUF_SIZE    1024
 
-typedef struct {
+typedef struct __attribute__((__packed__)) {
     float mpsqa;
     float temperature;
     float pressure;
